@@ -691,7 +691,7 @@ public class Database {
                             JSArray arr = new JSArray();
 
                             for(int j = 0; j < byteData.length; j++) {
-                                arr.put(Byte.toUnsignedInt(byteData[j]));
+                                arr.put(((int) byteData[j]) & 0xff);
                             }
 
                             row.put(colName, arr);
