@@ -106,7 +106,29 @@ public class UtilsSQLite {
             if (jsArray.isNull(i)) {
                 list.add(null);
             } else {
-                list.add(jsArray.get(i));
+                Object item = jsArray.get(i);
+
+                // convert to byte array
+                if(item instanceof JSONArray) {
+                    JSONArray arr = (JSONArray) item;
+                    byte[] byteArray = new byte[arr.length()];
+
+                    for(int j = 0; j < arr.length(); j++) {
+                        Object arrayValue = arr.get(j);
+
+                        if(arrayValue instanceof Integer) {
+                            byteArray[j] = (byte)(int)arrayValue;
+                        }
+                        else {
+                            throw new JSONException("Only bytes supported for array values");
+                        }
+                    }
+
+                    list.add(byteArray);
+                }
+                else {
+                    list.add(item);
+                }
             }
         }
         return list;

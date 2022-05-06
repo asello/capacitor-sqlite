@@ -686,7 +686,15 @@ public class Database {
                             row.put(colName, c.getDouble(c.getColumnIndex(colName)));
                             break;
                         case FIELD_TYPE_BLOB:
-                            row.put(colName, c.getBlob(c.getColumnIndex(colName)));
+                            byte[] byteData = c.getBlob(c.getColumnIndex(colName));
+
+                            JSArray arr = new JSArray();
+
+                            for(int j = 0; j < byteData.length; j++) {
+                                arr.put(byteData[j]);
+                            }
+
+                            row.put(colName, arr);
                             break;
                         case FIELD_TYPE_NULL:
                             row.put(colName, JSONObject.NULL);
