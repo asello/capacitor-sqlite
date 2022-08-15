@@ -36,6 +36,7 @@
     "verify": "npm run verify:ios && npm run verify:android && npm run verify:web && npm run verify:electron",
     "verify:ios": "cd ios && pod install && xcodebuild -workspace Plugin.xcworkspace -scheme Plugin OTHER_CFLAGS='-DHAVE_GETHOSTUUID=0' && cd ..",
     "verify:android": "cd android && ./gradlew clean build test && cd ..",
+    "verify:android:win": "cd android && gradlew.bat clean build test && cd ..",
     "verify:web": "npm run build",
     "verify:electron": "npm run build-electron",
     "lint": "npm run eslint && npm run prettier -- --check && npm run swiftlint -- lint",
@@ -55,23 +56,23 @@
     "prepublishOnly": "npm run build && npm run build-electron && npm run docgen"
   },
   "devDependencies": {
-    "@capacitor/android": "^3.4.3",
-    "@capacitor/core": "^3.4.3",
-    "@capacitor/docgen": "^0.0.17",
-    "@capacitor/ios": "^3.4.3",
+    "@capacitor/android": "^4.0.1",
+    "@capacitor/core": "^4.0.1",
+    "@capacitor/docgen": "^0.2.0",
+    "@capacitor/ios": "^4.0.1",
     "@ionic/eslint-config": "^0.3.0",
-    "@ionic/prettier-config": "^1.0.1",
+    "@ionic/prettier-config": "^2.0.0",
     "@ionic/swiftlint-config": "^1.1.2",
-    "@rollup/plugin-commonjs": "^20.0.0",
-    "@rollup/plugin-node-resolve": "^13.0.4",
-    "electron": "^14.2.4",
-    "eslint": "^7.11.0",
-    "prettier": "~2.2.0",
-    "prettier-plugin-java": "~1.0.0",
+    "@rollup/plugin-commonjs": "^22.0.2",
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "electron": "^20.0.2",
+    "eslint": "^8.22.0",
+    "prettier": "~2.7.1",
+    "prettier-plugin-java": "~1.6.2",
     "rimraf": "^3.0.2",
-    "rollup": "^2.32.0",
+    "rollup": "^2.78.0",
     "swiftlint": "^1.0.1",
-    "typescript": "~4.0.5"
+    "typescript": "~4.7.4"
   },
   "peerDependencies": {
     "@capacitor/core": "~3.4.3"
@@ -93,6 +94,6 @@
     }
   },
   "dependencies": {
-    "jeep-sqlite": "^1.5.1"
+    "jeep-sqlite": "^1.5.5"
   }
 }
