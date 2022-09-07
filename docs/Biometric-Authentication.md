@@ -1,16 +1,16 @@
 <p align="center"><br><img src="https://user-images.githubusercontent.com/236501/85893648-1c92e880-b7a8-11ea-926d-95355b8175c7.png" width="128" height="128" /></p>
 <h2 align="center">BIOMETRIC AUTHENTICATION USAGE DOCUMENTATION</h2>
-<p align="center"><strong><code>@capacitor-community/sqlite</code></strong></p>
+<p align="center"><strong><code>@asello/capacitor-sqlite</code></strong></p>
 <p align="center">
 <br>
 
 ## Only for Native Applications
 
-This is the description on how to use the BIOMETRIC AUTHENTICATION to secure the secret of the @capacitor-community/sqlite.
+This is the description on how to use the BIOMETRIC AUTHENTICATION to secure the secret of the @asello/capacitor-sqlite.
 
 
 ```bash
-npm i --save @capacitor-community/sqlite@latest
+npm i --save @asello/capacitor-sqlite@latest
 ```
 
 Modify the `capacitor-config.ts` file of your application

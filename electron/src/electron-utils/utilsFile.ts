@@ -103,11 +103,17 @@ export class UtilsFile {
    */
   public getDatabasesPath(): string {
     let retPath = '';
+
     const sep = this.Path.sep;
-    const dbFolder: string = this.pathDB;
+    let dbFolder: string = this.pathDB;
+
+    if(dbFolder.toLowerCase().indexOf("%appdata%") != -1) {
+        dbFolder = dbFolder.replace(/%appdata%/gmi, process.env.APPDATA);
+    }
+
     if (dbFolder.includes(sep)) {
       retPath = dbFolder;
-      if (this.Path.basename(dbFolder) !== this.AppName) {
+      if (this.Path.basename(dbFolder) !== this.AppName && dbFolder.indexOf(this.AppName) == -1) {
         retPath = this.Path.join(dbFolder, this.AppName);
       }
     } else {

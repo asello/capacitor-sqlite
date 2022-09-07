@@ -26,7 +26,7 @@ export default {
     commonjs({
       ignoreDynamicRequires: true,
       dynamicRequireTargets: [
-        'node_modules/@capacitor-community/sqlite/electron/dist/plugin.js',
+        'node_modules/@asello/capacitor-sqlite/electron/dist/plugin.js',
       ],
     }),
   ],

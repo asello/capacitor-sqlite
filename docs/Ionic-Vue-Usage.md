@@ -1,9 +1,9 @@
 <p align="center"><br><img src="https://user-images.githubusercontent.com/236501/85893648-1c92e880-b7a8-11ea-926d-95355b8175c7.png" width="128" height="128" /></p>
 <h2 align="center">IONIC/Vue USAGE DOCUMENTATION</h2>
-<p align="center"><strong><code>@capacitor-community/sqlite@latest</code></strong></p>
+<p align="center"><strong><code>@asello/capacitor-sqlite@latest</code></strong></p>
 <p align="center" style="font-size:50px;color:red"><strong>CAPACITOR 3</strong></p><br>
 <p align="center">
-  In Ionic/Vue Applications, the <code>@capacitor-community/sqlite@latest</code> can be accessed through a Singleton Vue Hook initialized in the <code>main.ts</code> file</p>
+  In Ionic/Vue Applications, the <code>@asello/capacitor-sqlite@latest</code> can be accessed through a Singleton Vue Hook initialized in the <code>main.ts</code> file</p>
 <br>
 
 ## Vue SQLite Hook
@@ -15,14 +15,14 @@
 
 ### Vue SQLite Hook Definition
 
-A Vue hook specific to `@capacitor-community/sqlite` plugin has been developed to access the plugin API
+A Vue hook specific to `@asello/capacitor-sqlite` plugin has been developed to access the plugin API
 
 - [vue-sqlite-hook](https://github.com/jepiqueau/vue-sqlite-hook/blob/main/README.md)
 
 To install it in your Ionic/Vue App
 
 ```bash
-    npm i --save-dev @capacitor-community/sqlite@latest
+    npm i --save-dev @asello/capacitor-sqlite@latest
     npm i --save-dev vue-sqlite-hook@latest
 ```
 
@@ -103,7 +103,7 @@ So the `main.ts`file
 ...
 import { defineCustomElements as jeepSqlite, applyPolyfills } from "jeep-sqlite/loader";
 import { Capacitor } from '@capacitor/core';
-import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection } from '@capacitor-community/sqlite';
+import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection } from '@asello/capacitor-sqlite';
 import { useState } from '@/composables/state';
 import { schemaToImport179 } from '@/utils/utils-import-from-json';
 
@@ -436,7 +436,7 @@ Where
 - `@/utils/utils-db-no-encryption`
 
 ```ts
-import { capSQLiteSet } from '@capacitor-community/sqlite';
+import { capSQLiteSet } from '@asello/capacitor-sqlite';
 export const createTablesNoEncryption = `
     CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY NOT NULL,
@@ -507,7 +507,7 @@ export const setUsers: Array<capSQLiteSet> = [
 - `@/utils/utils-db-encrypted-set`
 
 ```ts
-import { capSQLiteSet } from '@capacitor-community/sqlite';
+import { capSQLiteSet } from '@asello/capacitor-sqlite';
 export const createSchemaContacts = `
 CREATE TABLE IF NOT EXISTS contacts (
   id INTEGER PRIMARY KEY NOT NULL,
@@ -580,7 +580,7 @@ export const setMessages: Array<capSQLiteSet> = [
 - `@/utils/utils-delete-db`
 
 ```ts
-import { SQLiteDBConnection } from '@capacitor-community/sqlite';
+import { SQLiteDBConnection } from '@asello/capacitor-sqlite';
 
 export async function deleteDatabase(db: SQLiteDBConnection): Promise<void> {
   try {

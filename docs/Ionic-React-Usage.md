@@ -1,8 +1,8 @@
 <p align="center"><br><img src="https://user-images.githubusercontent.com/236501/85893648-1c92e880-b7a8-11ea-926d-95355b8175c7.png" width="128" height="128" /></p>
 <h2 align="center">IONIC/REACT USAGE DOCUMENTATION</h2>
-<p align="center"><strong><code>@capacitor-community/sqlite@latest</code></strong></p>
+<p align="center"><strong><code>@asello/capacitor-sqlite@latest</code></strong></p>
 <p align="center">
-  In Ionic/React Applications, the <code>@capacitor-community/sqlite@latest</code> can be accessed through a Singleton React Hook initialized in the <code>App.tsx</code> component</p>
+  In Ionic/React Applications, the <code>@asello/capacitor-sqlite@latest</code> can be accessed through a Singleton React Hook initialized in the <code>App.tsx</code> component</p>
 <br>
 
 ## React SQLite Hook
@@ -14,7 +14,7 @@
 
 ### React SQLite Hook Definition
 
-A react hook specific to `@capacitor-community/sqlite` plugin has been developed to access the plugin API
+A react hook specific to `@asello/capacitor-sqlite` plugin has been developed to access the plugin API
 
 - [react-sqlite-hook](https://github.com/jepiqueau/react-sqlite-hook/blob/master/README.md)
 
@@ -23,7 +23,7 @@ To install it in your Ionic/React App
  - `for Native Apps`
 
 ```bash
-    npm i --save-dev @capacitor-community/sqlite@latest
+    npm i --save-dev @asello/capacitor-sqlite@latest
     npm i --save-dev react-sqlite-hook@latest
 ```
 
@@ -88,7 +88,7 @@ import * as serviceWorker from './serviceWorker';
 import { defineCustomElements as jeepSqlite, applyPolyfills, JSX as LocalJSX  } from "jeep-sqlite/loader";
 import { HTMLAttributes } from 'react';
 import { Capacitor } from '@capacitor/core';
-import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection } from '@capacitor-community/sqlite';
+import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection } from '@asello/capacitor-sqlite';
 
 type StencilToReact<T> = {
   [P in keyof T]?: T[P] & Omit<HTMLAttributes<Element>, 'className'> & {
@@ -454,7 +454,7 @@ Where
 - `../Utils/noEncryptionUtils`
 
 ```ts
-import { capSQLiteSet } from '@capacitor-community/sqlite';
+import { capSQLiteSet } from '@asello/capacitor-sqlite';
 export const createTablesNoEncryption: string = `
     CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY NOT NULL,
@@ -499,7 +499,7 @@ export const importTwoUsers: string = `
 - `../Utils/encryptedSetUtils`
 
 ```ts
-import { capSQLiteSet } from '@capacitor-community/sqlite';
+import { capSQLiteSet } from '@asello/capacitor-sqlite';
 export const createSchemaContacts: string = `
 CREATE TABLE IF NOT EXISTS contacts (
   id INTEGER PRIMARY KEY NOT NULL,
@@ -546,7 +546,7 @@ export const setContacts: Array<capSQLiteSet> = [
 - `../Utils/deleteDBUtil`
 
 ```ts
-import { SQLiteDBConnection } from '@capacitor-community/sqlite';
+import { SQLiteDBConnection } from '@asello/capacitor-sqlite';
 
 export async function deleteDatabase(db: SQLiteDBConnection): Promise<void> {
     try {

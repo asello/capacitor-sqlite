@@ -1,7 +1,7 @@
 # Using capacitor-sqlite with TypeORM
 
 ```typescript
-import { CapacitorSQLite, SQLiteConnection } from '@capacitor-community/sqlite';
+import { CapacitorSQLite, SQLiteConnection } from '@asello/capacitor-sqlite';
 import { DataSource } from 'typeorm';
 
 // when using Capacitor, you might want to close existing connections, 

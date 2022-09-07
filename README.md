@@ -1,6 +1,6 @@
 <p align="center"><br><img src="https://user-images.githubusercontent.com/236501/85893648-1c92e880-b7a8-11ea-926d-95355b8175c7.png" width="128" height="128" /></p>
 <h3 align="center">SQLITE DATABASE</h3>
-<p align="center"><strong><code>@capacitor-community/sqlite</code></strong></p>
+<p align="center"><strong><code>@asello/capacitor-sqlite</code></strong></p>
 <br>
 <p align="center" style="font-size:50px;color:red"><strong>CAPACITOR 3</strong></p><br>
 
@@ -11,10 +11,10 @@
 <p align="center">
   <img src="https://img.shields.io/maintenance/yes/2022?style=flat-square" />
   <a href="https://github.com/capacitor-community/sqlite/actions?query=workflow%3A%22CI%22"><img src="https://img.shields.io/github/workflow/status/capacitor-community/sqlite/CI?style=flat-square" /></a>
-  <a href="https://www.npmjs.com/package/@capacitor-community/sqlite"><img src="https://img.shields.io/npm/l/@capacitor-community/sqlite?style=flat-square" /></a>
+  <a href="https://www.npmjs.com/package/@asello/capacitor-sqlite"><img src="https://img.shields.io/npm/l/@asello/capacitor-sqlite?style=flat-square" /></a>
 <br>
-  <a href="https://www.npmjs.com/package/@capacitor-community/sqlite"><img src="https://img.shields.io/npm/dw/@capacitor-community/sqlite?style=flat-square" /></a>
-  <a href="https://www.npmjs.com/package/@capacitor-community/sqlite"><img src="https://img.shields.io/npm/v/@capacitor-community/sqlite?style=flat-square" /></a>
+  <a href="https://www.npmjs.com/package/@asello/capacitor-sqlite"><img src="https://img.shields.io/npm/dw/@asello/capacitor-sqlite?style=flat-square" /></a>
+  <a href="https://www.npmjs.com/package/@asello/capacitor-sqlite"><img src="https://img.shields.io/npm/v/@asello/capacitor-sqlite?style=flat-square" /></a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 <a href="#contributors-"><img src="https://img.shields.io/badge/all%20contributors-16-orange?style=flat-square" /></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
@@ -211,7 +211,7 @@ meaning that it will not work in IE11 without additional JavaScript transformati
 ## Installation
 
 ```bash
-npm install @capacitor-community/sqlite
+npm install @asello/capacitor-sqlite
 npm run build
 npx cap add android
 npx cap add ios

@@ -1,12 +1,12 @@
 <p align="center"><br><img src="https://user-images.githubusercontent.com/236501/85893648-1c92e880-b7a8-11ea-926d-95355b8175c7.png" width="128" height="128" /></p>
 <h2 align="center">API PLUGIN DOCUMENTATION</h2>
-<p align="center"><strong><code>@capacitor-community/sqlite</code></strong></p>
+<p align="center"><strong><code>@asello/capacitor-sqlite</code></strong></p>
 <p align="center">
   Capacitor community plugin for Native and Electron SQLite Databases. For <strong>Native</strong> and <strong>Electron</strong> platforms, databases could be encrypted with SQLCipher</p>
 
 ## Plugin Wrappers
 
-To easy the way to use the `@capacitor-community/sqlite` plugin and its ability to be use in conjonction with other plugins (`typeorm`, `spatialite`, ...), two connection wrappers have been associated.
+To easy the way to use the `@asello/capacitor-sqlite` plugin and its ability to be use in conjonction with other plugins (`typeorm`, `spatialite`, ...), two connection wrappers have been associated.
 
 - [API_Connection_Wrapper_Documentation](https://github.com/capacitor-community/sqlite/blob/master/docs/APIConnection.md)
 
@@ -1220,7 +1220,7 @@ The listeners are attached to the plugin.
 
 ## Remote Server databases Synchronization Process
 
-The `@capacitor-community/sqlite` plugin provides a toolbox to help developpers to create a synchronization process in their applications.
+The `@asello/capacitor-sqlite` plugin provides a toolbox to help developpers to create a synchronization process in their applications.
 
 - [importFromJson()](#importfromjson)
 - [exportToJson()](#exporttojson)

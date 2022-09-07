@@ -108,7 +108,7 @@ The `2.4.x` is now 🛑 NOT MAINTAINED ANYMORE 🛑.
 To install it
 
 ```bash
-npm i --save @capacitor-community/sqlite@initial
+npm i --save @asello/capacitor-sqlite@initial
 ```
 The test has been achieved on:
 

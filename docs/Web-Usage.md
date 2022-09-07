@@ -1,18 +1,18 @@
 <p align="center"><br><img src="https://user-images.githubusercontent.com/236501/85893648-1c92e880-b7a8-11ea-926d-95355b8175c7.png" width="128" height="128" /></p>
 <h2 align="center">WEB USAGE DOCUMENTATION</h2>
-<p align="center"><strong><code>@capacitor-community/sqlite</code></strong></p>
+<p align="center"><strong><code>@asello/capacitor-sqlite</code></strong></p>
 <p align="center">
 <br>
 
 ## General to all applications
 
-This is the description on how to use the Web part of the @capacitor-community/sqlite for development purpose.
+This is the description on how to use the Web part of the @asello/capacitor-sqlite for development purpose.
 
 When your developement is fully tested, it will be a good idea to minimize the package size of your native app to remove the `jeep-sqlite` Stencil component and the `sql-wasm.wasm` file from the assets folder.
 
 
 ```bash
-npm i --save @capacitor-community/sqlite@latest
+npm i --save @asello/capacitor-sqlite@latest
 npm i --save jeep-sqlite@latest
 ```
 
@@ -154,7 +154,7 @@ import { Injectable } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { CapacitorSQLite, SQLiteDBConnection, SQLiteConnection, capSQLiteSet,
          capSQLiteChanges, capSQLiteValues, capEchoResult, capSQLiteResult,
-         capNCDatabasePathResult } from '@capacitor-community/sqlite';
+         capNCDatabasePathResult } from '@asello/capacitor-sqlite';
 
 @Injectable()
 
@@ -732,7 +732,7 @@ that is it.
 ...
 import { defineCustomElements as jeepSqlite, applyPolyfills } from "jeep-sqlite/loader";
 import { Capacitor } from '@capacitor/core';
-import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection } from '@capacitor-community/sqlite';
+import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection } from '@asello/capacitor-sqlite';
 import { useState } from '@/composables/state';
 
 
@@ -1138,7 +1138,7 @@ that is it.
 import { defineCustomElements as jeepSqlite, applyPolyfills, JSX as LocalJSX  } from "jeep-sqlite/loader";
 import { HTMLAttributes } from 'react';
 import { Capacitor } from '@capacitor/core';
-import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection } from '@capacitor-community/sqlite';
+import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection } from '@asello/capacitor-sqlite';
 
 type StencilToReact<T> = {
   [P in keyof T]?: T[P] & Omit<HTMLAttributes<Element>, 'className'> & {

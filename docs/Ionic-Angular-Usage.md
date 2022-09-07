@@ -1,8 +1,8 @@
 <p align="center"><br><img src="https://user-images.githubusercontent.com/236501/85893648-1c92e880-b7a8-11ea-926d-95355b8175c7.png" width="128" height="128" /></p>
 <h2 align="center">IONIC/ANGULAR USAGE DOCUMENTATION</h2>
-<p align="center"><strong><code>@capacitor-community/sqlite</code></strong></p>
+<p align="center"><strong><code>@asello/capacitor-sqlite</code></strong></p>
 <p align="center">
-  In Ionic/Angular Applications, the <code>@capacitor-community/sqlite</code> can be accessed through a Singleton Service initialized in the <code>app.component.ts</code></p>
+  In Ionic/Angular Applications, the <code>@asello/capacitor-sqlite</code> can be accessed through a Singleton Service initialized in the <code>app.component.ts</code></p>
 <br>
 
 ## Angular Singleton Service
@@ -22,7 +22,7 @@ import { Injectable } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { CapacitorSQLite, SQLiteDBConnection, SQLiteConnection, capSQLiteSet,
          capSQLiteChanges, capSQLiteValues, capEchoResult, capSQLiteResult,
-         capNCDatabasePathResult } from '@capacitor-community/sqlite';
+         capNCDatabasePathResult } from '@asello/capacitor-sqlite';
 
 @Injectable()
 
@@ -801,7 +801,7 @@ export class TestencryptionPage implements AfterViewInit {
 Where `no-encryption-utils.ts` is as follows:
 
 ```ts
-import { capSQLiteSet } from '@capacitor-community/sqlite';
+import { capSQLiteSet } from '@asello/capacitor-sqlite';
 export const createSchema: string = `
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY NOT NULL,
