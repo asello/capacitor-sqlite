@@ -49,7 +49,7 @@
     "docgenConnection": "docgen --api ISQLiteConnection --output-readme docs/APIConnection.md",
     "docgenDBConnection": "docgen --api ISQLiteDBConnection --output-readme docs/APIDBConnection.md",
     "build": "npm run clean && npm run docgen && tsc && rollup -c rollup.config.js --bundleConfigAsCjs",
-    "build-electron": "tsc --project electron/tsconfig.json && rollup -c electron/rollup.config.js && rimraf ./electron/build",
+    "build-electron": "tsc --project electron/tsconfig.json && rollup -c electron/rollup.config.js --bundleConfigAsCjs && rimraf ./electron/build",
     "clean": "rimraf ./dist",
     "watch": "tsc --watch",
     "test": "echo \"No test specified\"",
