@@ -1,6 +1,6 @@
 {
   "name": "@asello/capacitor-sqlite",
-  "version": "3.4.6",
+  "version": "5.0.0",
   "description": "Community plugin for native & electron SQLite databases",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -48,7 +48,7 @@
     "docgenPlugin": "docgen --api CapacitorSQLitePlugin --output-readme docs/API.md",
     "docgenConnection": "docgen --api ISQLiteConnection --output-readme docs/APIConnection.md",
     "docgenDBConnection": "docgen --api ISQLiteDBConnection --output-readme docs/APIDBConnection.md",
-    "build": "npm run clean && npm run docgen && tsc && rollup -c rollup.config.js",
+    "build": "npm run clean && npm run docgen && tsc && rollup -c rollup.config.js --bundleConfigAsCjs",
     "build-electron": "tsc --project electron/tsconfig.json && rollup -c electron/rollup.config.js && rimraf ./electron/build",
     "clean": "rimraf ./dist",
     "watch": "tsc --watch",
@@ -56,23 +56,23 @@
     "prepublishOnly": "npm run build && npm run build-electron && npm run docgen"
   },
   "devDependencies": {
-    "@capacitor/android": "^4.0.1",
-    "@capacitor/core": "^4.0.1",
-    "@capacitor/docgen": "^0.2.0",
-    "@capacitor/ios": "^4.0.1",
+    "@capacitor/android": "^5.0.5",
+    "@capacitor/core": "^5.0.5",
+    "@capacitor/docgen": "^0.2.1",
+    "@capacitor/ios": "^5.0.5",
     "@ionic/eslint-config": "^0.3.0",
-    "@ionic/prettier-config": "^2.0.0",
+    "@ionic/prettier-config": "^3.0.0",
     "@ionic/swiftlint-config": "^1.1.2",
-    "@rollup/plugin-commonjs": "^22.0.2",
-    "@rollup/plugin-node-resolve": "^13.3.0",
-    "electron": "^20.0.2",
-    "eslint": "^8.22.0",
-    "prettier": "~2.7.1",
-    "prettier-plugin-java": "~1.6.2",
-    "rimraf": "^3.0.2",
-    "rollup": "^2.78.0",
-    "swiftlint": "^1.0.1",
-    "typescript": "~4.7.4"
+    "@rollup/plugin-commonjs": "^25.0.2",
+    "@rollup/plugin-node-resolve": "^15.1.0",
+    "electron": "^25.2.0",
+    "eslint": "^8.43.0",
+    "prettier": "~2.8.8",
+    "prettier-plugin-java": "~2.1.0",
+    "rimraf": "^5.0.1",
+    "rollup": "^3.25.3",
+    "swiftlint": "^1.0.2",
+    "typescript": "~5.1.6"
   },
   "prettier": "@ionic/prettier-config",
   "swiftlint": "@ionic/swiftlint-config",
@@ -91,6 +91,6 @@
     }
   },
   "dependencies": {
-    "jeep-sqlite": "^1.5.5"
+    "jeep-sqlite": "^2.3.7"
   }
 }
