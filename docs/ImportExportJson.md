@@ -35,9 +35,9 @@ The main change is related to the delete table's rows when a synchronization tab
   ```
   CREATE TRIGGER YOUR_TABLE_NAME_trigger_last_modified
     AFTER UPDATE ON YOUR_TABLE_NAME
-    FOR EACH ROW WHEN NEW.last_modified < OLD.last_modified
+    FOR EACH ROW WHEN NEW.last_modified <= OLD.last_modified
     BEGIN
-        UPDATE YOUR_TABLE_NAME SET last_modified= (strftime('%s', 'now')) WHERE id=OLD.id;
+        UPDATE YOUR_TABLE_NAME SET last_modified= (strftime('%s', 'now')) WHERE id=NEW.id;
     END;
   ```
 - an new column `sql_deleted` must be added to each of your tables as
@@ -122,7 +122,7 @@ Internally the `importFromJson`method is splitted into three SQL Transactions:
 🚨 Since release 3.4.2-3 ->> 🚨
 
  - **overwrite** boolean parameter has been added to the Json Object (default false) 
-   - `true` : delete the physically the database whatever the version is.
+   - `true` : delete physically the database whatever the version is.
    - `false`: 
       - re-importing a database with the same `version` number will do nothing, keeping the existing database and will return `changes = 0`
       - re-importing a database with a lower `version` number will throw an error `ImportFromJson: Cannot import a version lower than `

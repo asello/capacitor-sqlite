@@ -13,7 +13,9 @@ enum UtilsSecretError: Error {
     case setPassphrase(message: String)
     case changePassphrase(message: String)
     case setEncryptionSecret(message: String)
-    case  changeEncryptionSecret(message: String)
+    case changeEncryptionSecret(message: String)
+    case clearEncryptionSecret(message: String)
+    case checkEncryptionSecret(message: String)
 }
 
 let oldAccount: String = "CapacitorSQLitePlugin"
@@ -240,4 +242,47 @@ class UtilsSecret {
     }
     // swiftlint:enable function_body_length
 
+    // MARK: - ClearEncryptionSecret
+
+    class func clearEncryptionSecret(prefix: String, databaseLocation: String) throws {
+        do {
+            if prefix.isEmpty {
+                let msg: String = "keychain prefix must not be empty"
+                throw UtilsSecretError.setEncryptionSecret(message: msg)
+            }
+            // clear encrypted passphrase
+            let account = "\(prefix)_\(oldAccount)"
+            if !getPassphrase(account: account).isEmpty {
+                try setPassphrase(account: account, passphrase: "")
+            }
+        } catch UtilsSecretError.setPassphrase(let message) {
+            throw UtilsSecretError.clearEncryptionSecret(message: message)
+        }
+
+    }
+
+    // MARK: - CheckEncryptionSecret
+
+    class func checkEncryptionSecret(prefix: String, passphrase: String) throws -> NSNumber {
+        var ret: NSNumber = 0
+        if prefix.isEmpty {
+            let msg: String = "keychain prefix must not be empty"
+            throw UtilsSecretError.checkEncryptionSecret(message: msg)
+        }
+        if passphrase.isEmpty {
+            let msg: String = "passphrase must not be empty"
+            throw UtilsSecretError.checkEncryptionSecret(message: msg)
+        }
+        // get encrypted passphrase
+        let account = "\(prefix)_\(oldAccount)"
+        let storedPassPhrase = getPassphrase(account: account)
+        if storedPassPhrase.isEmpty {
+            let msg: String = "no passphrase stored in keychain"
+            throw UtilsSecretError.checkEncryptionSecret(message: msg)
+        }
+        if storedPassPhrase == passphrase {
+            ret = 1
+        }
+        return ret
+    }
 }

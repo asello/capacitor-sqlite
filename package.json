@@ -1,96 +1,104 @@
 {
-  "name": "@asello/capacitor-sqlite",
-  "version": "5.0.0",
-  "description": "Community plugin for native & electron SQLite databases",
-  "main": "dist/plugin.cjs.js",
-  "module": "dist/esm/index.js",
-  "types": "dist/esm/index.d.ts",
-  "unpkg": "dist/plugin.js",
-  "files": [
-    "android/src/main/",
-    "android/build.gradle",
-    "dist/",
-    "ios/Plugin/",
-    "electron/",
-    "CapacitorCommunitySqlite.podspec"
-  ],
-  "author": "Jean Pierre Quéau",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/capacitor-community/sqlite.git"
-  },
-  "bugs": {
-    "url": "https://github.com/capacitor-community/sqlite/issues"
-  },
-  "keywords": [
-    "capacitor",
-    "plugin",
-    "native",
-    "electron",
-    "browser",
-    "database",
-    "sqlite"
-  ],
-  "scripts": {
-    "verify": "npm run verify:ios && npm run verify:android && npm run verify:web && npm run verify:electron",
-    "verify:ios": "cd ios && pod install && xcodebuild -workspace Plugin.xcworkspace -scheme Plugin OTHER_CFLAGS='-DHAVE_GETHOSTUUID=0' && cd ..",
-    "verify:android": "cd android && ./gradlew clean build test && cd ..",
-    "verify:android:win": "cd android && gradlew.bat clean build test && cd ..",
-    "verify:web": "npm run build",
-    "verify:electron": "npm run build-electron",
-    "lint": "npm run eslint && npm run prettier -- --check && npm run swiftlint -- lint",
-    "fmt": "npm run eslint -- --fix && npm run prettier -- --write && npm run swiftlint -- autocorrect --format",
-    "eslint": "eslint . --ext ts",
-    "prettier": "prettier \"**/*.{css,html,ts,js,java}\"",
-    "swiftlint": "node-swiftlint",
-    "docgen": "npm run docgenPlugin && npm run docgenConnection && npm run docgenDBConnection",
-    "docgenPlugin": "docgen --api CapacitorSQLitePlugin --output-readme docs/API.md",
-    "docgenConnection": "docgen --api ISQLiteConnection --output-readme docs/APIConnection.md",
-    "docgenDBConnection": "docgen --api ISQLiteDBConnection --output-readme docs/APIDBConnection.md",
-    "build": "npm run clean && npm run docgen && tsc && rollup -c rollup.config.js --bundleConfigAsCjs",
-    "build-electron": "tsc --project electron/tsconfig.json && rollup -c electron/rollup.config.js --bundleConfigAsCjs && rimraf ./electron/build",
-    "clean": "rimraf ./dist",
-    "watch": "tsc --watch",
-    "test": "echo \"No test specified\"",
-    "prepublishOnly": "npm run build && npm run build-electron && npm run docgen"
-  },
-  "devDependencies": {
-    "@capacitor/android": "^5.0.5",
-    "@capacitor/core": "^5.0.5",
-    "@capacitor/docgen": "^0.2.1",
-    "@capacitor/ios": "^5.0.5",
-    "@ionic/eslint-config": "^0.3.0",
-    "@ionic/prettier-config": "^3.0.0",
-    "@ionic/swiftlint-config": "^1.1.2",
-    "@rollup/plugin-commonjs": "^25.0.2",
-    "@rollup/plugin-node-resolve": "^15.1.0",
-    "electron": "^25.2.0",
-    "eslint": "^8.43.0",
-    "prettier": "~2.8.8",
-    "prettier-plugin-java": "~2.1.0",
-    "rimraf": "^5.0.1",
-    "rollup": "^3.25.3",
-    "swiftlint": "^1.0.2",
-    "typescript": "~5.1.6"
-  },
-  "prettier": "@ionic/prettier-config",
-  "swiftlint": "@ionic/swiftlint-config",
-  "eslintConfig": {
-    "extends": "@ionic/eslint-config/recommended"
-  },
-  "capacitor": {
-    "ios": {
-      "src": "ios"
+    "name": "@asello/capacitor-sqlite",
+    "version": "5.2.3",
+    "description": "Community plugin for native & electron SQLite databases",
+    "main": "dist/plugin.cjs.js",
+    "module": "dist/esm/index.js",
+    "types": "dist/esm/index.d.ts",
+    "unpkg": "dist/plugin.js",
+    "files": [
+        "android/src/main/",
+        "android/build.gradle",
+        "dist/",
+        "src/",
+        "ios/Plugin/",
+        "electron/",
+        "CapacitorCommunitySqlite.podspec"
+    ],
+    "author": "Jean Pierre Quéau",
+    "license": "MIT",
+    "engines": {
+        "node": ">=16.0.0"
     },
-    "android": {
-      "src": "android"
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/capacitor-community/sqlite.git"
     },
-    "electron": {
-      "src": "electron"
+    "bugs": {
+        "url": "https://github.com/capacitor-community/sqlite/issues"
+    },
+    "keywords": [
+        "capacitor",
+        "plugin",
+        "native",
+        "electron",
+        "browser",
+        "database",
+        "sqlite"
+    ],
+    "scripts": {
+        "verify": "npm run verify:ios && npm run verify:android && npm run verify:web && npm run verify:electron",
+        "verify:ios": "cd ios && pod install && xcodebuild -workspace Plugin.xcworkspace -scheme Plugin OTHER_CFLAGS='-DHAVE_GETHOSTUUID=0' && cd ..",
+        "verify:android": "cd android && ./gradlew clean build test && cd ..",
+        "verify:android:win": "cd android && gradlew.bat clean build test && cd ..",
+        "verify:web": "npm run build",
+        "verify:electron": "npm run build-electron",
+        "lint": "npm run eslint && npm run prettier -- --check && npm run swiftlint -- lint",
+        "fmt": "npm run eslint -- --fix && npm run prettier -- --write && npm run swiftlint -- autocorrect --format",
+        "eslint": "eslint . --ext ts",
+        "prettier": "prettier \"**/*.{css,html,ts,js,java}\"",
+        "swiftlint": "node-swiftlint",
+        "docgen": "npm run docgenPlugin && npm run docgenConnection && npm run docgenDBConnection",
+        "docgenPlugin": "docgen --api CapacitorSQLitePlugin --output-readme docs/API.md",
+        "docgenConnection": "docgen --api ISQLiteConnection --output-readme docs/APIConnection.md",
+        "docgenDBConnection": "docgen --api ISQLiteDBConnection --output-readme docs/APIDBConnection.md",
+        "build": "npm run clean && npm run docgen && tsc && rollup -c rollup.config.js --bundleConfigAsCjs",
+        "build-electron": "tsc --project electron/tsconfig.json && rollup -c electron/rollup.config.js --bundleConfigAsCjs && rimraf ./electron/build",
+        "clean": "rimraf ./dist",
+        "watch": "tsc --watch",
+        "test": "echo \"No test specified\"",
+        "prepublishOnly": "npm run build && npm run build-electron && npm run docgen"
+    },
+    "devDependencies": {
+        "@capacitor/android": "^5.4.0",
+        "@capacitor/cli": "^5.4.0",
+        "@capacitor/core": "^5.4.0",
+        "@capacitor/docgen": "^0.2.1",
+        "@capacitor/ios": "^5.4.0",
+        "@ionic/eslint-config": "^0.3.0",
+        "@ionic/prettier-config": "^4.0.0",
+        "@ionic/swiftlint-config": "^1.1.2",
+        "@rollup/plugin-commonjs": "^25.0.4",
+        "@rollup/plugin-node-resolve": "^15.2.1",
+        "electron": "^26.2.1",
+        "eslint": "^8.49.0",
+        "prettier": "~3.0.3",
+        "prettier-plugin-java": "~2.3.1",
+        "rimraf": "^5.0.1",
+        "rollup": "^3.29.2",
+        "swiftlint": "^1.0.2",
+        "typescript": "~5.2.2"
+    },
+    "peerDependencies": {
+        "@capacitor/core": "^5.0.0"
+    },
+    "prettier": "@ionic/prettier-config",
+    "swiftlint": "@ionic/swiftlint-config",
+    "eslintConfig": {
+        "extends": "@ionic/eslint-config/recommended"
+    },
+    "capacitor": {
+        "ios": {
+            "src": "ios"
+        },
+        "android": {
+            "src": "android"
+        },
+        "electron": {
+            "src": "electron"
+        }
+    },
+    "dependencies": {
+        "jeep-sqlite": "^2.5.2"
     }
-  },
-  "dependencies": {
-    "jeep-sqlite": "^2.3.7"
-  }
 }

@@ -1,7 +1,6 @@
 package com.getcapacitor.community.database.sqlite.SQLite;
 
 import android.content.Context;
-import com.getcapacitor.community.database.sqlite.SQLite.UtilsFile;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -14,7 +13,10 @@ public class UtilsMigrate {
         String pathDB = new File(context.getFilesDir().getParentFile(), "databases").getAbsolutePath();
         File dirDB = new File(pathDB);
         if (!dirDB.isDirectory()) {
-            dirDB.mkdir();
+            boolean nDir = dirDB.mkdir();
+            if (!nDir) {
+                throw new Exception("Cannot create dir" + pathDB);
+            }
         }
         String pathFiles = this.getFolder(context, folderPath);
         // check if the path exists
@@ -30,7 +32,10 @@ public class UtilsMigrate {
         String pathDB = new File(context.getFilesDir().getParentFile(), "databases").getAbsolutePath();
         File dirDB = new File(pathDB);
         if (!dirDB.isDirectory()) {
-            dirDB.mkdir();
+            boolean nDir = dirDB.mkdir();
+            if (!nDir) {
+                throw new Exception("Cannot create dir" + pathDB);
+            }
         }
         String pathFiles = this.getFolder(context, folderPath);
         // check if the path exists
@@ -74,7 +79,11 @@ public class UtilsMigrate {
     public String getFolder(Context context, String folderPath) throws Exception {
         String pathFiles = context.getFilesDir().getAbsolutePath();
         String pathDB = new File(context.getFilesDir().getParentFile(), "databases").getAbsolutePath();
-        if (!folderPath.equals("default")) {
+        if (folderPath.equals("default")) {
+            pathFiles = pathDB;
+        } else if (folderPath.equalsIgnoreCase("cache")) {
+            pathFiles = context.getCacheDir().getAbsolutePath();
+        } else {
             String[] arr = folderPath.split("/", 2);
             if (arr.length == 2) {
                 if (arr[0].equals("files")) {
@@ -85,8 +94,6 @@ public class UtilsMigrate {
                     throw new Exception("Folder " + folderPath + " not allowed");
                 }
             }
-        } else {
-            pathFiles = pathDB;
         }
         return pathFiles;
     }
@@ -121,5 +128,53 @@ public class UtilsMigrate {
             }
         }
         return;
+    }
+
+    public void moveDatabasesAndAddSuffix(Context context, String folderPath, ArrayList<String> dbList) throws Exception {
+        String pathDB = new File(context.getFilesDir().getParentFile(), "databases").getAbsolutePath();
+        File dirDB = new File(pathDB);
+        if (!dirDB.isDirectory()) {
+            boolean nDir = dirDB.mkdir();
+            if (!nDir) {
+                throw new Exception("Cannot create dir" + pathDB);
+            }
+        }
+        String pathFiles = this.getFolder(context, folderPath);
+        // check if the path exists
+        File dir = new File(pathFiles);
+        if (!dir.exists()) {
+            throw new Exception("Folder " + dir + " does not exist");
+        }
+        String[] listFiles = dir.list();
+        if (!pathDB.equals(pathFiles) && listFiles.length == 0) {
+            throw new Exception("Folder " + dir + " no database files");
+        }
+        for (String file : listFiles) {
+            if (file.contains("SQLite.db")) {
+                continue;
+            }
+            String fromFile = file;
+            String toFile = "";
+            if (dbList.size() > 0) {
+                if (dbList.contains(file)) {
+                    if (uFile.getFileExtension((file)).equals("db")) {
+                        toFile = file.replace(".db", "SQLite.db");
+                    } else {
+                        toFile = file.concat("SQLite.db");
+                    }
+                }
+            } else {
+                if (uFile.getFileExtension((file)).equals("db")) {
+                    toFile = file.replace(".db", "SQLite.db");
+                }
+            }
+            if (toFile.length() > 0) {
+                boolean ret = new File(pathFiles, fromFile).renameTo(new File(pathDB, toFile));
+                if (!ret) {
+                    String msg = "Failed in move " + fromFile + " to " + file;
+                    throw new Exception(msg);
+                }
+            }
+        }
     }
 }

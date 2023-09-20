@@ -15,11 +15,15 @@ export default {
   external: [
     '@capacitor/core',
     'electron',
-    'sqlite3',
+    'electron-json-storage',
+    'better-sqlite3-multiple-ciphers',
+    'crypto',
+    'crypto-js',
     'path',
     'fs',
     'os',
     'jszip',
+    'node-fetch',
   ],
   plugins: [
     nodeResolve(),

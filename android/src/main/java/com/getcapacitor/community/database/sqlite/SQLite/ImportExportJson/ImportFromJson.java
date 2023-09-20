@@ -77,7 +77,7 @@ public class ImportFromJson {
         SupportSQLiteDatabase db = mDb.getDb();
         try {
             if (mDb != null && mDb.isOpen() && jsonSQL != null) {
-                db.beginTransaction();
+                mDb.beginTransaction();
                 // Create a Schema Statement
                 ArrayList<String> statements = createSchemaStatement(jsonSQL);
                 if (statements.size() > 0) {
@@ -87,7 +87,7 @@ public class ImportFromJson {
                     }
                     changes = _uSqlite.dbChanges(db) - initChanges;
                     if (changes >= 0) {
-                        db.setTransactionSuccessful();
+                        mDb.commitTransaction();
                     }
                 } else {
                     if (jsonSQL.getMode().equals("partial")) {
@@ -104,7 +104,7 @@ public class ImportFromJson {
         } catch (Exception e) {
             throw new Exception("CreateSchema: " + e.getMessage());
         } finally {
-            if (db != null && db.inTransaction()) db.endTransaction();
+            if (db != null && db.inTransaction()) mDb.rollbackTransaction();
         }
         return changes;
     }
@@ -159,6 +159,7 @@ public class ImportFromJson {
         ArrayList<String> statements = new ArrayList<>();
         String stmt = new StringBuilder("CREATE TABLE IF NOT EXISTS ").append(tableName).append(" (").toString();
         Boolean isLastModified = false;
+        Boolean isSqlDeleted = false;
         for (int j = 0; j < mSchema.size(); j++) {
             if (j == mSchema.size() - 1) {
                 if (mSchema.get(j).getColumn() != null) {
@@ -166,6 +167,9 @@ public class ImportFromJson {
                         new StringBuilder(stmt).append(mSchema.get(j).getColumn()).append(" ").append(mSchema.get(j).getValue()).toString();
                     if (mSchema.get(j).getColumn().equals("last_modified")) {
                         isLastModified = true;
+                    }
+                    if (mSchema.get(j).getColumn().equals("sql_deleted")) {
+                        isSqlDeleted = true;
                     }
                 } else if (mSchema.get(j).getForeignkey() != null) {
                     stmt =
@@ -196,6 +200,9 @@ public class ImportFromJson {
                     if (mSchema.get(j).getColumn().equals("last_modified")) {
                         isLastModified = true;
                     }
+                    if (mSchema.get(j).getColumn().equals("sql_deleted")) {
+                        isSqlDeleted = true;
+                    }
                 } else if (mSchema.get(j).getForeignkey() != null) {
                     stmt =
                         new StringBuilder(stmt)
@@ -219,7 +226,7 @@ public class ImportFromJson {
         }
         stmt = new StringBuilder(stmt).append(");").toString();
         statements.add(stmt);
-        if (isLastModified) {
+        if (isLastModified && isSqlDeleted) {
             // create trigger last_modified associated with the table
             String stmtTrigger = new StringBuilder("CREATE TRIGGER IF NOT EXISTS ")
                 .append(tableName)
@@ -310,7 +317,7 @@ public class ImportFromJson {
         try {
             if (mDb != null && mDb.isOpen() && jsonSQL != null) {
                 initChanges = _uSqlite.dbChanges(db);
-                db.beginTransaction();
+                mDb.beginTransaction();
                 for (int i = 0; i < jsonSQL.getTables().size(); i++) {
                     if (jsonSQL.getTables().get(i).getValues().size() > 0) {
                         isValues = true;
@@ -334,7 +341,7 @@ public class ImportFromJson {
                 } else {
                     changes = _uSqlite.dbChanges(db) - initChanges;
                     if (changes >= 0) {
-                        db.setTransactionSuccessful();
+                        mDb.commitTransaction();
                         notifyImportProgressEvent("Tables data creation completed changes: " + changes);
                     }
                 }
@@ -348,7 +355,7 @@ public class ImportFromJson {
         } catch (Exception e) {
             throw new Exception("CreateDatabaseData: " + e.getMessage());
         } finally {
-            if (db != null && db.inTransaction()) db.endTransaction();
+            if (db != null && db.inTransaction()) mDb.rollbackTransaction();
         }
         return changes;
     }
@@ -373,8 +380,18 @@ public class ImportFromJson {
             if (tableNamesTypes.length() == 0) {
                 throw new Exception("CreateTableData: no column names & types returned");
             }
-            ArrayList<String> tColNames = (ArrayList<String>) tableNamesTypes.get("names");
-            ArrayList<String> tColTypes = (ArrayList<String>) tableNamesTypes.get("types");
+            ArrayList<String> tColNames = new ArrayList<>();
+            ArrayList<String> tColTypes = new ArrayList<>();
+            if (tableNamesTypes.has("names")) {
+                tColNames = _uJson.getColumnNames(tableNamesTypes.get("names"));
+            } else {
+                throw new Exception("GetValues: Table " + tableName + " no names");
+            }
+            if (tableNamesTypes.has("types")) {
+                tColTypes = _uJson.getColumnNames(tableNamesTypes.get("types"));
+            } else {
+                throw new Exception("GetValues: Table " + tableName + " no types");
+            }
 
             // Loop on Table's Values
             for (int j = 0; j < values.size(); j++) {
@@ -391,7 +408,8 @@ public class ImportFromJson {
                     if (stmt.substring(0, 6).toUpperCase().equals("DELETE")) {
                         row = new ArrayList<>();
                     }
-                    long lastId = mDb.prepareSQL(stmt, row, true);
+                    JSObject retObj = mDb.prepareSQL(stmt, row, true, "no");
+                    long lastId = retObj.getLong("lastId");
                     if (lastId < 0) {
                         throw new Exception("CreateTableData: lastId < 0");
                     }
@@ -540,14 +558,16 @@ public class ImportFromJson {
                 if (row.get(idxDelete).equals(1)) {
                     // Delete
                     isUpdate = false;
-                    stmt =
-                        new StringBuilder("DELETE FROM ")
-                            .append(tableName)
-                            .append(" WHERE ")
-                            .append(tColNames.get(0))
-                            .append(" = ")
-                            .append(row.get(0))
-                            .toString();
+                    Object key = tColNames.get(0);
+                    StringBuilder sbQuery = new StringBuilder("DELETE FROM ")
+                        .append(tableName)
+                        .append(" WHERE ")
+                        .append(tColNames.get(0))
+                        .append(" = ");
+
+                    if (key instanceof Integer) sbQuery.append(row.get(0)).append(";");
+                    if (key instanceof String) sbQuery.append("'").append(row.get(0)).append("';");
+                    stmt = sbQuery.toString();
                 }
             }
             if (isUpdate) {
@@ -585,7 +605,7 @@ public class ImportFromJson {
         SupportSQLiteDatabase db = mDb.getDb();
         try {
             if (mDb != null && mDb.isOpen() && views.size() > 0) {
-                db.beginTransaction();
+                mDb.beginTransaction();
                 // Create Views
                 Integer initChanges = _uSqlite.dbChanges(db);
                 for (JsonView view : views) {
@@ -603,7 +623,7 @@ public class ImportFromJson {
                 }
                 changes = _uSqlite.dbChanges(db) - initChanges;
                 if (changes >= 0) {
-                    db.setTransactionSuccessful();
+                    mDb.commitTransaction();
                 }
             } else {
                 throw new Exception("CreateViews: Database not opened");
@@ -611,7 +631,7 @@ public class ImportFromJson {
         } catch (Exception e) {
             throw new Exception("CreateViews: " + e.getMessage());
         } finally {
-            if (db != null && db.inTransaction()) db.endTransaction();
+            if (db != null && db.inTransaction()) mDb.rollbackTransaction();
         }
         return changes;
     }

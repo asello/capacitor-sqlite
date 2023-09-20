@@ -8,22 +8,46 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="44fbe1ce-ecee-45f0-9074-7afa8867b86b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/getcapacitor/community/database/sqlite/SQLite/BiometricListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/getcapacitor/community/database/sqlite/SQLite/SqliteConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/getcapacitor/community/database/sqlite/SQLite/UtilsBiometric.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.classpath" beforeDir="false" afterPath="$PROJECT_DIR$/.classpath" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/getcapacitor/community/database/sqlite/SQLite/UtilsDelete.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/getcapacitor/community/database/sqlite/SQLite/UtilsSQLStatement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/../CHANGELOG.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.settings/org.eclipse.buildship.core.prefs" beforeDir="false" afterPath="$PROJECT_DIR$/.settings/org.eclipse.buildship.core.prefs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/getcapacitor/community/database/sqlite/CapacitorSQLite.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/getcapacitor/community/database/sqlite/CapacitorSQLite.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/getcapacitor/community/database/sqlite/CapacitorSQLitePlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/getcapacitor/community/database/sqlite/CapacitorSQLitePlugin.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/getcapacitor/community/database/sqlite/SQLite/Database.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/getcapacitor/community/database/sqlite/SQLite/Database.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/getcapacitor/community/database/sqlite/SQLite/UtilsSecret.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/getcapacitor/community/database/sqlite/SQLite/UtilsSecret.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/getcapacitor/community/database/sqlite/SQLite/ImportExportJson/ImportFromJson.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/getcapacitor/community/database/sqlite/SQLite/ImportExportJson/ImportFromJson.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/getcapacitor/community/database/sqlite/SQLite/UtilsDrop.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/getcapacitor/community/database/sqlite/SQLite/UtilsDrop.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/getcapacitor/community/database/sqlite/SQLite/UtilsUpgrade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/getcapacitor/community/database/sqlite/SQLite/UtilsUpgrade.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../docs/API.md" beforeDir="false" afterPath="$PROJECT_DIR$/../docs/API.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../docs/APIDBConnection.md" beforeDir="false" afterPath="$PROJECT_DIR$/../docs/APIDBConnection.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../electron/src/electron-utils/Database.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../electron/src/electron-utils/Database.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../electron/src/electron-utils/ImportExportJson/exportToJson.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../electron/src/electron-utils/ImportExportJson/exportToJson.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../electron/src/electron-utils/ImportExportJson/importFromJson.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../electron/src/electron-utils/ImportExportJson/importFromJson.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../electron/src/electron-utils/ImportExportJson/utilsJson.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../electron/src/electron-utils/ImportExportJson/utilsJson.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../electron/src/electron-utils/utilsDelete.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../electron/src/electron-utils/utilsDelete.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../electron/src/electron-utils/utilsDrop.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../electron/src/electron-utils/utilsDrop.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../electron/src/electron-utils/utilsEncryption.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../electron/src/electron-utils/utilsEncryption.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../electron/src/electron-utils/utilsSQLite.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../electron/src/electron-utils/utilsSQLite.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../electron/src/electron-utils/utilsSecret.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../electron/src/electron-utils/utilsSecret.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../electron/src/electron-utils/utilsSqlstatement.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../electron/src/electron-utils/utilsSqlstatement.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../electron/src/electron-utils/utilsUpgrade.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../electron/src/electron-utils/utilsUpgrade.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../electron/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../electron/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ios/Plugin/CapacitorSQLite.swift" beforeDir="false" afterPath="$PROJECT_DIR$/../ios/Plugin/CapacitorSQLite.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ios/Plugin/CapacitorSQLitePlugin.m" beforeDir="false" afterPath="$PROJECT_DIR$/../ios/Plugin/CapacitorSQLitePlugin.m" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../ios/Plugin/CapacitorSQLitePlugin.swift" beforeDir="false" afterPath="$PROJECT_DIR$/../ios/Plugin/CapacitorSQLitePlugin.swift" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ios/Plugin/SqliteConfig.swift" beforeDir="false" afterPath="$PROJECT_DIR$/../ios/Plugin/SqliteConfig.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ios/Plugin/Database.swift" beforeDir="false" afterPath="$PROJECT_DIR$/../ios/Plugin/Database.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ios/Plugin/ImportExportJson/ImportFromJson.swift" beforeDir="false" afterPath="$PROJECT_DIR$/../ios/Plugin/ImportExportJson/ImportFromJson.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ios/Plugin/Utils/UtilsDelete.swift" beforeDir="false" afterPath="$PROJECT_DIR$/../ios/Plugin/Utils/UtilsDelete.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ios/Plugin/Utils/UtilsSQLCipher.swift" beforeDir="false" afterPath="$PROJECT_DIR$/../ios/Plugin/Utils/UtilsSQLCipher.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ios/Plugin/Utils/UtilsSQLStatement.swift" beforeDir="false" afterPath="$PROJECT_DIR$/../ios/Plugin/Utils/UtilsSQLStatement.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ios/Plugin/Utils/UtilsUpgrade.swift" beforeDir="false" afterPath="$PROJECT_DIR$/../ios/Plugin/Utils/UtilsUpgrade.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../src/definitions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../src/definitions.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/web.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../src/web.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,13 +62,16 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="1nQBYxQw6LHnP31f4Vls53mWtLl" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -54,16 +81,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="android.sdk.path" value="$USER_HOME$/Library/Android/sdk" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="project.structure.last.edited" value="Dependencies" />
-    <property name="project.structure.proportion" value="0.17" />
-    <property name="project.structure.side.proportion" value="0.4055944" />
-    <property name="settings.editor.selected.configurable" value="AndroidSdkUpdater" />
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Volumes/Development_Lacie/Development/latest/sqlite/android&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.17&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;
+  }
+}</component>
+  <component name="PsdUISettings">
+    <option name="LAST_EDITED_BUILD_TYPE" value="release" />
   </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
@@ -87,9 +117,6 @@
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <option name="VM_PARAMETERS" />
     </configuration>
-    <configuration name="&lt;template&gt;" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" default="true" selected="false">
-      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
-    </configuration>
     <configuration default="true" type="Application" factoryName="Application">
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <method v="2">
@@ -112,6 +139,15 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType">
+      <module name="" />
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+      <option name="PROGRAM_PARAMETERS" />
+      <predefined_log_file enabled="true" id="idea.log" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
@@ -130,41 +166,6 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
-  <component name="WindowStateProjectService">
-    <state x="246" y="218" key="#PSD" timestamp="1622301246886">
-      <screen x="0" y="25" width="1680" height="1025" />
-    </state>
-    <state x="246" y="198" key="#PSD/0.0.1680.1050@0.0.1680.1050" timestamp="1622275860442" />
-    <state x="246" y="218" key="#PSD/0.25.1680.1025@0.25.1680.1025" timestamp="1622301246886" />
-    <state x="300" y="177" width="1083" height="696" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1620052469264">
-      <screen x="0" y="0" width="1680" height="1050" />
-    </state>
-    <state x="300" y="177" width="1083" height="696" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1680.1050@0.0.1680.1050" timestamp="1620052469264" />
-    <state width="1624" height="234" key="GridCell.Tab.0.bottom" timestamp="1619247157332">
-      <screen x="0" y="0" width="1680" height="1050" />
-    </state>
-    <state width="1624" height="234" key="GridCell.Tab.0.bottom/0.0.1680.1050@0.0.1680.1050" timestamp="1619247157332" />
-    <state width="1624" height="234" key="GridCell.Tab.0.center" timestamp="1619247157330">
-      <screen x="0" y="0" width="1680" height="1050" />
-    </state>
-    <state width="1624" height="234" key="GridCell.Tab.0.center/0.0.1680.1050@0.0.1680.1050" timestamp="1619247157330" />
-    <state width="1624" height="234" key="GridCell.Tab.0.left" timestamp="1619247157329">
-      <screen x="0" y="0" width="1680" height="1050" />
-    </state>
-    <state width="1624" height="234" key="GridCell.Tab.0.left/0.0.1680.1050@0.0.1680.1050" timestamp="1619247157329" />
-    <state width="1624" height="234" key="GridCell.Tab.0.right" timestamp="1619247157331">
-      <screen x="0" y="0" width="1680" height="1050" />
-    </state>
-    <state width="1624" height="234" key="GridCell.Tab.0.right/0.0.1680.1050@0.0.1680.1050" timestamp="1619247157331" />
-    <state x="224" y="73" key="SettingsEditor" timestamp="1622275031555">
-      <screen x="0" y="0" width="1680" height="1050" />
-    </state>
-    <state x="224" y="73" key="SettingsEditor/0.0.1680.1050@0.0.1680.1050" timestamp="1622275031555" />
-    <state x="476" y="217" width="816" height="616" key="find.popup" timestamp="1619104951493">
-      <screen x="0" y="0" width="1680" height="1050" />
-    </state>
-    <state x="476" y="217" width="816" height="616" key="find.popup/0.0.1680.1050@0.0.1680.1050" timestamp="1619104951493" />
-  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
@@ -172,6 +173,11 @@
           <url>file://$PROJECT_DIR$/src/main/java/com/getcapacitor/community/database/sqlite/SQLite/UtilsSQLCipher.java</url>
           <line>47</line>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/getcapacitor/community/database/sqlite/CapacitorSQLite.java</url>
+          <line>882</line>
+          <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

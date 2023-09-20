@@ -91,6 +91,38 @@ The plugin add a suffix "SQLite" and an extension ".db" to the database name giv
 
 - the database is stored in Web browser INDEXEDDB storage as a `localforage` store under the `jeepSqliteStore` name and `databases` table name.
 
+## Comments within SQL statements
+
+ - see [Comments within SQL](https://www.techonthenet.com/sqlite/comments.php)
+
+## Unexpected behaviours
+
+Unexpected or erroneous behaviour users of this library have encountered.
+
+### 1. Running multiple update statements in one statement
+
+<ins>The Problem:</ins>
+
+In https://github.com/capacitor-community/sqlite/issues/393 a user of this library
+experienced bugs when running a statement that itself contained multiple update statements.
+
+The statement executed fine on the web version of this library (sql-wasm.wasm).
+
+But on android and IOS only some updates took place, some updates were ignored and did not take effect in the database.
+
+<ins>The Solution:</ins>
+
+When running multiple update statements and experiencing such errors, try running them in separate single statements and await (Promise) each statement to finish running before running the next statement.
+
+Note that in general in SQLite this is not recommended, since it makes your queries take a bit longer.
+
+## Write-Ahead Logging (WAL)
+
+ - Electron, Web platforms only WAL journal_mode is implemented
+
+ - Both WAL and WAL2 journal_mode are implemented
+
+ - Android WAL2 is set by default, so you do not need to set it up
 
 ## Error Return values
 
@@ -115,14 +147,22 @@ The plugin add a suffix "SQLite" and an extension ".db" to the database name giv
 
 * [`initWebStore()`](#initwebstore)
 * [`saveToStore(...)`](#savetostore)
+* [`getFromLocalDiskToStore(...)`](#getfromlocaldisktostore)
+* [`saveToLocalDisk(...)`](#savetolocaldisk)
 * [`isSecretStored()`](#issecretstored)
 * [`setEncryptionSecret(...)`](#setencryptionsecret)
 * [`changeEncryptionSecret(...)`](#changeencryptionsecret)
+* [`clearEncryptionSecret()`](#clearencryptionsecret)
+* [`checkEncryptionSecret(...)`](#checkencryptionsecret)
 * [`createConnection(...)`](#createconnection)
 * [`closeConnection(...)`](#closeconnection)
 * [`echo(...)`](#echo)
 * [`open(...)`](#open)
 * [`close(...)`](#close)
+* [`beginTransaction(...)`](#begintransaction)
+* [`commitTransaction(...)`](#committransaction)
+* [`rollbackTransaction(...)`](#rollbacktransaction)
+* [`isTransactionActive(...)`](#istransactionactive)
 * [`getUrl(...)`](#geturl)
 * [`getVersion(...)`](#getversion)
 * [`execute(...)`](#execute)
@@ -131,6 +171,9 @@ The plugin add a suffix "SQLite" and an extension ".db" to the database name giv
 * [`query(...)`](#query)
 * [`isDBExists(...)`](#isdbexists)
 * [`isDBOpen(...)`](#isdbopen)
+* [`isDatabaseEncrypted(...)`](#isdatabaseencrypted)
+* [`isInConfigEncryption()`](#isinconfigencryption)
+* [`isInConfigBiometricAuth()`](#isinconfigbiometricauth)
 * [`isDatabase(...)`](#isdatabase)
 * [`isTableExists(...)`](#istableexists)
 * [`deleteDatabase(...)`](#deletedatabase)
@@ -143,11 +186,13 @@ The plugin add a suffix "SQLite" and an extension ".db" to the database name giv
 * [`deleteExportedRows(...)`](#deleteexportedrows)
 * [`addUpgradeStatement(...)`](#addupgradestatement)
 * [`copyFromAssets(...)`](#copyfromassets)
+* [`getFromHTTPRequest(...)`](#getfromhttprequest)
 * [`getDatabaseList()`](#getdatabaselist)
 * [`getTableList(...)`](#gettablelist)
 * [`getMigratableDbList(...)`](#getmigratabledblist)
 * [`addSQLiteSuffix(...)`](#addsqlitesuffix)
 * [`deleteOldDatabases(...)`](#deleteolddatabases)
+* [`moveDatabasesAndAddSuffix(...)`](#movedatabasesandaddsuffix)
 * [`checkConnectionsConsistency(...)`](#checkconnectionsconsistency)
 * [`getNCDatabasePath(...)`](#getncdatabasepath)
 * [`createNCConnection(...)`](#createncconnection)
@@ -191,6 +236,40 @@ Save database to  the web store
 | **`options`** | <code><a href="#capsqliteoptions">capSQLiteOptions</a></code> | : <a href="#capsqliteoptions">capSQLiteOptions</a> |
 
 **Since:** 3.2.3-1
+
+--------------------
+
+
+### getFromLocalDiskToStore(...)
+
+```typescript
+getFromLocalDiskToStore(options: capSQLiteLocalDiskOptions) => Promise<void>
+```
+
+Get database from local disk and save it to store
+
+| Param         | Type                                                                            | Description                                                          |
+| ------------- | ------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| **`options`** | <code><a href="#capsqlitelocaldiskoptions">capSQLiteLocalDiskOptions</a></code> | : <a href="#capsqlitelocaldiskoptions">capSQLiteLocalDiskOptions</a> |
+
+**Since:** 4.6.3
+
+--------------------
+
+
+### saveToLocalDisk(...)
+
+```typescript
+saveToLocalDisk(options: capSQLiteOptions) => Promise<void>
+```
+
+Save database to local disk
+
+| Param         | Type                                                          | Description                                        |
+| ------------- | ------------------------------------------------------------- | -------------------------------------------------- |
+| **`options`** | <code><a href="#capsqliteoptions">capSQLiteOptions</a></code> | : <a href="#capsqliteoptions">capSQLiteOptions</a> |
+
+**Since:** 4.6.3
 
 --------------------
 
@@ -244,6 +323,38 @@ in secure store
 | **`options`** | <code><a href="#capchangesecretoptions">capChangeSecretOptions</a></code> | <a href="#capchangesecretoptions">capChangeSecretOptions</a> |
 
 **Since:** 3.0.0-beta.13
+
+--------------------
+
+
+### clearEncryptionSecret()
+
+```typescript
+clearEncryptionSecret() => Promise<void>
+```
+
+Clear the passphrase in the secure store
+
+**Since:** 3.5.1
+
+--------------------
+
+
+### checkEncryptionSecret(...)
+
+```typescript
+checkEncryptionSecret(options: capSetSecretOptions) => Promise<capSQLiteResult>
+```
+
+Check encryption passphrase
+
+| Param         | Type                                                                |
+| ------------- | ------------------------------------------------------------------- |
+| **`options`** | <code><a href="#capsetsecretoptions">capSetSecretOptions</a></code> |
+
+**Returns:** <code>Promise&lt;<a href="#capsqliteresult">capSQLiteResult</a>&gt;</code>
+
+**Since:** 4.6.1
 
 --------------------
 
@@ -332,6 +443,82 @@ Close a SQLite database
 | **`options`** | <code><a href="#capsqliteoptions">capSQLiteOptions</a></code> | : <a href="#capsqliteoptions">capSQLiteOptions</a> |
 
 **Since:** 0.0.1
+
+--------------------
+
+
+### beginTransaction(...)
+
+```typescript
+beginTransaction(options: capSQLiteOptions) => Promise<capSQLiteChanges>
+```
+
+Begin Database Transaction
+
+| Param         | Type                                                          |
+| ------------- | ------------------------------------------------------------- |
+| **`options`** | <code><a href="#capsqliteoptions">capSQLiteOptions</a></code> |
+
+**Returns:** <code>Promise&lt;<a href="#capsqlitechanges">capSQLiteChanges</a>&gt;</code>
+
+**Since:** 5.0.7
+
+--------------------
+
+
+### commitTransaction(...)
+
+```typescript
+commitTransaction(options: capSQLiteOptions) => Promise<capSQLiteChanges>
+```
+
+Commit Database Transaction
+
+| Param         | Type                                                          |
+| ------------- | ------------------------------------------------------------- |
+| **`options`** | <code><a href="#capsqliteoptions">capSQLiteOptions</a></code> |
+
+**Returns:** <code>Promise&lt;<a href="#capsqlitechanges">capSQLiteChanges</a>&gt;</code>
+
+**Since:** 5.0.7
+
+--------------------
+
+
+### rollbackTransaction(...)
+
+```typescript
+rollbackTransaction(options: capSQLiteOptions) => Promise<capSQLiteChanges>
+```
+
+Rollback Database Transaction
+
+| Param         | Type                                                          |
+| ------------- | ------------------------------------------------------------- |
+| **`options`** | <code><a href="#capsqliteoptions">capSQLiteOptions</a></code> |
+
+**Returns:** <code>Promise&lt;<a href="#capsqlitechanges">capSQLiteChanges</a>&gt;</code>
+
+**Since:** 5.0.7
+
+--------------------
+
+
+### isTransactionActive(...)
+
+```typescript
+isTransactionActive(options: capSQLiteOptions) => Promise<capSQLiteResult>
+```
+
+Is Database Transaction Active
+
+| Param         | Type                                                          |
+| ------------- | ------------------------------------------------------------- |
+| **`options`** | <code><a href="#capsqliteoptions">capSQLiteOptions</a></code> |
+
+**Returns:** <code>Promise&lt;<a href="#capsqliteresult">capSQLiteResult</a>&gt;</code>
+
+**Since:** 5.0.7
 
 --------------------
 
@@ -484,6 +671,55 @@ Check if a SQLite database is opened
 **Returns:** <code>Promise&lt;<a href="#capsqliteresult">capSQLiteResult</a>&gt;</code>
 
 **Since:** 3.0.0-beta.5
+
+--------------------
+
+
+### isDatabaseEncrypted(...)
+
+```typescript
+isDatabaseEncrypted(options: capSQLiteOptions) => Promise<capSQLiteResult>
+```
+
+Check if a SQLite database is encrypted
+
+| Param         | Type                                                          | Description                                        |
+| ------------- | ------------------------------------------------------------- | -------------------------------------------------- |
+| **`options`** | <code><a href="#capsqliteoptions">capSQLiteOptions</a></code> | : <a href="#capsqliteoptions">capSQLiteOptions</a> |
+
+**Returns:** <code>Promise&lt;<a href="#capsqliteresult">capSQLiteResult</a>&gt;</code>
+
+**Since:** 4.6.2-2
+
+--------------------
+
+
+### isInConfigEncryption()
+
+```typescript
+isInConfigEncryption() => Promise<capSQLiteResult>
+```
+
+Check encryption value in capacitor.config
+
+**Returns:** <code>Promise&lt;<a href="#capsqliteresult">capSQLiteResult</a>&gt;</code>
+
+**Since:** 4.6.2-2
+
+--------------------
+
+
+### isInConfigBiometricAuth()
+
+```typescript
+isInConfigBiometricAuth() => Promise<capSQLiteResult>
+```
+
+Check encryption value in capacitor.config
+
+**Returns:** <code>Promise&lt;<a href="#capsqliteresult">capSQLiteResult</a>&gt;</code>
+
+**Since:** 4.6.2-2
 
 --------------------
 
@@ -706,6 +942,23 @@ Copy databases from public/assets/databases folder to application databases fold
 --------------------
 
 
+### getFromHTTPRequest(...)
+
+```typescript
+getFromHTTPRequest(options: capSQLiteHTTPOptions) => Promise<void>
+```
+
+Get database or zipped database(s) from url
+
+| Param         | Type                                                                  | Description                                                |
+| ------------- | --------------------------------------------------------------------- | ---------------------------------------------------------- |
+| **`options`** | <code><a href="#capsqlitehttpoptions">capSQLiteHTTPOptions</a></code> | : <a href="#capsqlitehttpoptions">capSQLiteHTTPOptions</a> |
+
+**Since:** 4.1.1
+
+--------------------
+
+
 ### getDatabaseList()
 
 ```typescript
@@ -789,6 +1042,22 @@ Delete Old Cordova databases
 | **`options`** | <code><a href="#capsqlitepathoptions">capSQLitePathOptions</a></code> | : <a href="#capsqlitepathoptions">capSQLitePathOptions</a> |
 
 **Since:** 3.0.0-beta.5
+
+--------------------
+
+
+### moveDatabasesAndAddSuffix(...)
+
+```typescript
+moveDatabasesAndAddSuffix(options: capSQLitePathOptions) => Promise<void>
+```
+
+Moves databases to the location the plugin can read them, and adds sqlite suffix
+This resembles calling addSQLiteSuffix and deleteOldDatabases, but it is more performant as it doesn't copy but moves the files
+
+| Param         | Type                                                                  | Description                                                |
+| ------------- | --------------------------------------------------------------------- | ---------------------------------------------------------- |
+| **`options`** | <code><a href="#capsqlitepathoptions">capSQLitePathOptions</a></code> | : <a href="#capsqlitepathoptions">capSQLitePathOptions</a> |
 
 --------------------
 
@@ -891,9 +1160,17 @@ Check if a non conformed database exists without connection
 
 #### capSQLiteOptions
 
-| Prop           | Type                | Description       |
-| -------------- | ------------------- | ----------------- |
-| **`database`** | <code>string</code> | The database name |
+| Prop           | Type                 | Description                                      |
+| -------------- | -------------------- | ------------------------------------------------ |
+| **`database`** | <code>string</code>  | The database name                                |
+| **`readonly`** | <code>boolean</code> | Set to true (database in read-only mode) / false |
+
+
+#### capSQLiteLocalDiskOptions
+
+| Prop            | Type                 | Description                                                                                              |
+| --------------- | -------------------- | -------------------------------------------------------------------------------------------------------- |
+| **`overwrite`** | <code>boolean</code> | Set the overwrite mode for saving the database from local disk to store "true"/"false" default to "true" |
 
 
 #### capSQLiteResult
@@ -926,6 +1203,7 @@ Check if a non conformed database exists without connection
 | **`version`**   | <code>number</code>  | The database version                                                       |
 | **`encrypted`** | <code>boolean</code> | Set to true (database encryption) / false                                  |
 | **`mode`**      | <code>string</code>  | Set the mode for database encryption ["encryption", "secret", "newsecret"] |
+| **`readonly`**  | <code>boolean</code> | Set to true (database in read-only mode) / false                           |
 
 
 #### capEchoResult
@@ -942,6 +1220,22 @@ Check if a non conformed database exists without connection
 | **`value`** | <code>string</code> | String to be echoed |
 
 
+#### capSQLiteChanges
+
+| Prop          | Type                                        | Description                               |
+| ------------- | ------------------------------------------- | ----------------------------------------- |
+| **`changes`** | <code><a href="#changes">Changes</a></code> | a returned <a href="#changes">Changes</a> |
+
+
+#### Changes
+
+| Prop          | Type                | Description                                          |
+| ------------- | ------------------- | ---------------------------------------------------- |
+| **`changes`** | <code>number</code> | the number of changes from an execute or run command |
+| **`lastId`**  | <code>number</code> | the lastId created from a run command                |
+| **`values`**  | <code>any[]</code>  | values when RETURNING                                |
+
+
 #### capSQLiteUrl
 
 | Prop      | Type                | Description    |
@@ -956,37 +1250,27 @@ Check if a non conformed database exists without connection
 | **`version`** | <code>number</code> | Number returned |
 
 
-#### capSQLiteChanges
-
-| Prop          | Type                                        | Description                               |
-| ------------- | ------------------------------------------- | ----------------------------------------- |
-| **`changes`** | <code><a href="#changes">Changes</a></code> | a returned <a href="#changes">Changes</a> |
-
-
-#### Changes
-
-| Prop          | Type                | Description                                          |
-| ------------- | ------------------- | ---------------------------------------------------- |
-| **`changes`** | <code>number</code> | the number of changes from an execute or run command |
-| **`lastId`**  | <code>number</code> | the lastId created from a run command                |
-
-
 #### capSQLiteExecuteOptions
 
-| Prop              | Type                 | Description                                         | Since         |
-| ----------------- | -------------------- | --------------------------------------------------- | ------------- |
-| **`database`**    | <code>string</code>  | The database name                                   |               |
-| **`statements`**  | <code>string</code>  | The batch of raw SQL statements as string           |               |
-| **`transaction`** | <code>boolean</code> | Enable / Disable transactions default Enable (true) | 3.0.0-beta.10 |
+| Prop              | Type                 | Description                                          | Since         |
+| ----------------- | -------------------- | ---------------------------------------------------- | ------------- |
+| **`database`**    | <code>string</code>  | The database name                                    |               |
+| **`statements`**  | <code>string</code>  | The batch of raw SQL statements as string            |               |
+| **`transaction`** | <code>boolean</code> | Enable / Disable transactions default Enable (true)  | 3.0.0-beta.10 |
+| **`readonly`**    | <code>boolean</code> | ReadOnly / ReadWrite default ReadWrite (false)       | 4.1.0-7       |
+| **`isSQL92`**     | <code>boolean</code> | Compatibility SQL92 !!! ELECTRON ONLY default (true) | 5.0.7         |
 
 
 #### capSQLiteSetOptions
 
-| Prop              | Type                        | Description                                               | Since         |
-| ----------------- | --------------------------- | --------------------------------------------------------- | ------------- |
-| **`database`**    | <code>string</code>         | The database name                                         |               |
-| **`set`**         | <code>capSQLiteSet[]</code> | The batch of raw SQL statements as Array of capSQLLiteSet |               |
-| **`transaction`** | <code>boolean</code>        | Enable / Disable transactions default Enable (true)       | 3.0.0-beta.10 |
+| Prop              | Type                        | Description                                                            | Since         |
+| ----------------- | --------------------------- | ---------------------------------------------------------------------- | ------------- |
+| **`database`**    | <code>string</code>         | The database name                                                      |               |
+| **`set`**         | <code>capSQLiteSet[]</code> | The batch of raw SQL statements as Array of capSQLLiteSet              |               |
+| **`transaction`** | <code>boolean</code>        | Enable / Disable transactions default Enable (true)                    | 3.0.0-beta.10 |
+| **`readonly`**    | <code>boolean</code>        | ReadOnly / ReadWrite default ReadWrite (false)                         | 4.1.0-7       |
+| **`returnMode`**  | <code>string</code>         | return mode default 'no' value 'all' value 'one' for Electron platform | 5.0.5-3       |
+| **`isSQL92`**     | <code>boolean</code>        | Compatibility SQL92 !!! ELECTRON ONLY default (true)                   | 5.0.7         |
 
 
 #### capSQLiteSet
@@ -999,12 +1283,15 @@ Check if a non conformed database exists without connection
 
 #### capSQLiteRunOptions
 
-| Prop              | Type                 | Description                                         | Since         |
-| ----------------- | -------------------- | --------------------------------------------------- | ------------- |
-| **`database`**    | <code>string</code>  | The database name                                   |               |
-| **`statement`**   | <code>string</code>  | A statement                                         |               |
-| **`values`**      | <code>any[]</code>   | A set of values for a statement                     |               |
-| **`transaction`** | <code>boolean</code> | Enable / Disable transactions default Enable (true) | 3.0.0-beta.10 |
+| Prop              | Type                 | Description                                                            | Since         |
+| ----------------- | -------------------- | ---------------------------------------------------------------------- | ------------- |
+| **`database`**    | <code>string</code>  | The database name                                                      |               |
+| **`statement`**   | <code>string</code>  | A statement                                                            |               |
+| **`values`**      | <code>any[]</code>   | A set of values for a statement                                        |               |
+| **`transaction`** | <code>boolean</code> | Enable / Disable transactions default Enable (true)                    | 3.0.0-beta.10 |
+| **`readonly`**    | <code>boolean</code> | ReadOnly / ReadWrite default ReadWrite (false)                         | 4.1.0-7       |
+| **`returnMode`**  | <code>string</code>  | return mode default 'no' value 'all' value 'one' for Electron platform | 5.0.5-3       |
+| **`isSQL92`**     | <code>boolean</code> | Compatibility SQL92 !!! ELECTRON ONLY default (true)                   | 5.0.7         |
 
 
 #### capSQLiteValues
@@ -1016,19 +1303,22 @@ Check if a non conformed database exists without connection
 
 #### capSQLiteQueryOptions
 
-| Prop            | Type                | Description                                     | Since         |
-| --------------- | ------------------- | ----------------------------------------------- | ------------- |
-| **`database`**  | <code>string</code> | The database name                               |               |
-| **`statement`** | <code>string</code> | A statement                                     |               |
-| **`values`**    | <code>any[]</code>  | A set of values for a statement Change to any[] | 3.0.0-beta.11 |
+| Prop            | Type                 | Description                                          | Since         |
+| --------------- | -------------------- | ---------------------------------------------------- | ------------- |
+| **`database`**  | <code>string</code>  | The database name                                    |               |
+| **`statement`** | <code>string</code>  | A statement                                          |               |
+| **`values`**    | <code>any[]</code>   | A set of values for a statement Change to any[]      | 3.0.0-beta.11 |
+| **`readonly`**  | <code>boolean</code> | ReadOnly / ReadWrite default ReadWrite (false)       | 4.1.0-7       |
+| **`isSQL92`**   | <code>boolean</code> | Compatibility SQL92 !!! ELECTRON ONLY default (true) | 5.0.7         |
 
 
 #### capSQLiteTableOptions
 
-| Prop           | Type                | Description       |
-| -------------- | ------------------- | ----------------- |
-| **`database`** | <code>string</code> | The database name |
-| **`table`**    | <code>string</code> | The table name    |
+| Prop           | Type                 | Description                                    | Since   |
+| -------------- | -------------------- | ---------------------------------------------- | ------- |
+| **`database`** | <code>string</code>  | The database name                              |         |
+| **`table`**    | <code>string</code>  | The table name                                 |         |
+| **`readonly`** | <code>boolean</code> | ReadOnly / ReadWrite default ReadWrite (false) | 4.1.0-7 |
 
 
 #### capSQLiteImportOptions
@@ -1108,18 +1398,21 @@ Check if a non conformed database exists without connection
 
 #### capSQLiteExportOptions
 
-| Prop                 | Type                | Description                                             |
-| -------------------- | ------------------- | ------------------------------------------------------- |
-| **`database`**       | <code>string</code> | The database name                                       |
-| **`jsonexportmode`** | <code>string</code> | Set the mode to export JSON Object: "full" or "partial" |
+| Prop                 | Type                 | Description                                                                                                                  | Since   |
+| -------------------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------- |
+| **`database`**       | <code>string</code>  | The database name                                                                                                            |         |
+| **`jsonexportmode`** | <code>string</code>  | Set the mode to export JSON Object: "full" or "partial"                                                                      |         |
+| **`readonly`**       | <code>boolean</code> | ReadOnly / ReadWrite default ReadWrite (false)                                                                               | 4.1.0-7 |
+| **`encrypted`**      | <code>boolean</code> | Encrypted When your database is encrypted Choose the export Json Object Encrypted (true) / Unencrypted (false) default false | 5.0.8   |
 
 
 #### capSQLiteSyncDateOptions
 
-| Prop           | Type                | Description                                                    |
-| -------------- | ------------------- | -------------------------------------------------------------- |
-| **`database`** | <code>string</code> | The database name                                              |
-| **`syncdate`** | <code>string</code> | Set the synchronization date Format yyyy-MM-dd'T'HH:mm:ss.SSSZ |
+| Prop           | Type                 | Description                                                    | Since   |
+| -------------- | -------------------- | -------------------------------------------------------------- | ------- |
+| **`database`** | <code>string</code>  | The database name                                              |         |
+| **`syncdate`** | <code>string</code>  | Set the synchronization date Format yyyy-MM-dd'T'HH:mm:ss.SSSZ |         |
+| **`readonly`** | <code>boolean</code> | ReadOnly / ReadWrite default ReadWrite (false)                 | 4.1.0-7 |
 
 
 #### capSQLiteSyncDate
@@ -1139,18 +1432,24 @@ Check if a non conformed database exists without connection
 
 #### capSQLiteVersionUpgrade
 
-| Prop              | Type                        |
-| ----------------- | --------------------------- |
-| **`fromVersion`** | <code>number</code>         |
-| **`toVersion`**   | <code>number</code>         |
-| **`statement`**   | <code>string</code>         |
-| **`set`**         | <code>capSQLiteSet[]</code> |
+| Prop             | Type                  |
+| ---------------- | --------------------- |
+| **`toVersion`**  | <code>number</code>   |
+| **`statements`** | <code>string[]</code> |
 
 
 #### capSQLiteFromAssetsOptions
 
 | Prop            | Type                 | Description                                                                      |
 | --------------- | -------------------- | -------------------------------------------------------------------------------- |
+| **`overwrite`** | <code>boolean</code> | Set the overwrite mode for the copy from assets "true"/"false" default to "true" |
+
+
+#### capSQLiteHTTPOptions
+
+| Prop            | Type                 | Description                                                                      |
+| --------------- | -------------------- | -------------------------------------------------------------------------------- |
+| **`url`**       | <code>string</code>  | The url of the database or the zipped database(s)                                |
 | **`overwrite`** | <code>boolean</code> | Set the overwrite mode for the copy from assets "true"/"false" default to "true" |
 
 
@@ -1164,9 +1463,10 @@ Check if a non conformed database exists without connection
 
 #### capAllConnectionsOptions
 
-| Prop          | Type                  | Description                   | Since         |
-| ------------- | --------------------- | ----------------------------- | ------------- |
-| **`dbNames`** | <code>string[]</code> | the dbName of all connections | 3.0.0-beta.10 |
+| Prop            | Type                  | Description                                                      | Since         |
+| --------------- | --------------------- | ---------------------------------------------------------------- | ------------- |
+| **`dbNames`**   | <code>string[]</code> | the dbName of all connections                                    | 3.0.0-beta.10 |
+| **`openModes`** | <code>string[]</code> | the openMode ("RW" read&write, "RO" readonly) of all connections | 4.1.0         |
 
 
 #### capNCDatabasePathResult
@@ -1247,7 +1547,7 @@ last_modified INTEGER DEFAULT (strftime('%s', 'now'))
 ...
 ...
 CREATE TRIGGER users_trigger_last_modified AFTER UPDATE ON [tableName]
-FOR EACH ROW WHEN NEW.last_modified <= OLD.last_modified
+FOR EACH ROW WHEN NEW.last_modified < OLD.last_modified
 BEGIN
    UPDATE [tableName] SET last_modified= (strftime('%s', 'now')) WHERE id=OLD.id;
 END;
