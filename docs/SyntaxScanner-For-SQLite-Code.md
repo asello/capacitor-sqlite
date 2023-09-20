@@ -1,6 +1,6 @@
 <p align="center"><br><img alt="" src="https://user-images.githubusercontent.com/236501/85893648-1c92e880-b7a8-11ea-926d-95355b8175c7.png" width="128" height="128" /></p>
 <h2 align="center">SyntaxScanning for your SQLite code</h2>
-<p align="center"><strong><code>@capacitor-community/sqlite</code></strong></p>
+<p align="center"><strong><code>@asello/capacitor-sqlite</code></strong></p>
 <p align="center">
   A workaround for getting Syntax & Errors for your SQLite code <strong>based on your schema definition</strong> when using an IDE similar to IntelliJ ultimate where you have a database tab where you can connect the database and then get syntax highlighting & errors shown right away.</p>
 

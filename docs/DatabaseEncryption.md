@@ -1,11 +1,11 @@
 <p align="center"><br><img src="https://user-images.githubusercontent.com/236501/85893648-1c92e880-b7a8-11ea-926d-95355b8175c7.png" width="128" height="128" /></p>
 <h2 align="center">SQLite Database Encryption DOCUMENTATION</h2>
-<p align="center"><strong><code>@capacitor-community/sqlite</code></strong></p>
+<p align="center"><strong><code>@asello/capacitor-sqlite</code></strong></p>
 <p align="center">
   Capacitor community plugin for Native and Electron SQLite Databases. For <strong>Native</strong> and <strong>Electron</strong> platforms, databases could be encrypted with SQLCipher extension of SQLite</p>
 <p align="left">
   <strong>SQLCipher</strong> adds 256 bit AES encryption of database files. <br>
-  <strong><code>@capacitor-community/sqlite</code></strong> allows: <br>
+  <strong><code>@asello/capacitor-sqlite</code></strong> allows: <br>
   <ul>
     <ui> - Encryption of existing non-encrypted database </ui><br>
     <ui> - Encryption of new database </ui><br>
@@ -39,7 +39,7 @@ const config: CapacitorConfig = {
 
 ```ts
 import { Capacitor } from '@capacitor/core';
-import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection} from '@capacitor-community/sqlite';
+import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection} from '@asello/capacitor-sqlite';
 
 // Plugin Initialization
 const platform = Capacitor.getPlatform();
@@ -155,7 +155,7 @@ if(isEncryption) {
 ```ts
 
 import { Capacitor } from '@capacitor/core';
-import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection} from '@capacitor-community/sqlite';
+import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection} from '@asello/capacitor-sqlite';
 
 // Plugin Initialization
 const platform = Capacitor.getPlatform();

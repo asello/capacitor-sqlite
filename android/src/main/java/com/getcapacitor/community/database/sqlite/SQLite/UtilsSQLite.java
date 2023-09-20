@@ -136,8 +136,7 @@ public class UtilsSQLite {
                     } else {
                         throw new JSONException("Object not implemented");
                     }
-                } 
-                else {
+                } else {
                     list.add(item);
                 }
             }

@@ -32,17 +32,17 @@
 To install:
 
 ```
-npm install --save @capacitor-community/sqlite
+npm install --save @asello/capacitor-sqlite
 npx cap sync
 ```
 
 ```
-yarn add @capacitor-community/sqlite
+yarn add @asello/capacitor-sqlite
 npx cap sync
 ```
 
 ```
-pnpm install --save @capacitor-community/sqlite
+pnpm install --save @asello/capacitor-sqlite
 pnpm install --save @jeep-sqlite
 pnpm install --save sql.js
 npx cap sync

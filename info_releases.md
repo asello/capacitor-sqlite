@@ -6,7 +6,7 @@
   Developers can now install it as normal
 
   ```
-  npm install @capacitor-community/sqlite@latest
+  npm install @asello/capacitor-sqlite@latest
   ```  
 
 🚨 Release 4.0.1 <<- 🚨
@@ -15,7 +15,7 @@
   This is a tentative of implementing @Capacitor/core@4.0.1 proposed by rdlabo (Masahiko Sakakibara). 
   For those who want to try it do
   ```
-  npm install @capacitor-community/sqlite@next
+  npm install @asello/capacitor-sqlite@next
   ```
   Revert quickly any issue by clearly mentionning V4 in the title of the issue.
 
@@ -289,7 +289,7 @@ The `2.4.x` is now 🛑 NOT MAINTAINED ANYMORE 🛑.
 To install it
 
 ```bash
-npm i --save @capacitor-community/sqlite@initial
+npm i --save @asello/capacitor-sqlite@initial
 ```
 The test has been achieved on:
 
