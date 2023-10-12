@@ -1,3 +1,31 @@
+# 5.4.0 (2023-10-05)
+
+### Chore
+
+ - Update to @capacitor/core@5.4.0
+ - Update to @capacitor/ios@5.4.0
+ - Update to @capacitor/android@5.4.0
+
+### Added Features
+
+ - Add Electron decryptDatabase method
+
+### Bug Fixes
+
+ - Fix Electron setEncryptSecret
+
+# 5.2.5 (2023-09-28)
+
+### Bug Fixes
+
+ - Fix Android pattern in extractColumnNames
+
+# 5.2.4 (2023-09-28)
+
+### Bug Fixes
+
+ - Fix Bug: deleteSQL: Did not find column names in the WHERE Statement issue#470 all platforms
+
 # 5.2.3 (2023-09-03)
 
 ### Chore

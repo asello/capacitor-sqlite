@@ -9,9 +9,16 @@ export class UtilsSecret {
   private fileUtil: UtilsFile = new UtilsFile();
   private storage = require('electron-json-storage');
 
+  public isPassphraseValid(passphrase: string): boolean {
+    let isValid = false;
+    const secret = this.getPassphrase();
+    if (secret === passphrase) {
+      isValid = true;
+    }
+    return isValid;
+  }
   public isSecretStored(): boolean {
     const secret = this.getPassphrase();
-
     if (secret.length <= 0) return false;
     return true;
   }
@@ -34,6 +41,7 @@ export class UtilsSecret {
               if (error) throw new Error(`setEncryptSecret: ${error.message}`);
             },
           );
+          return;
         });
       }
     } catch (err) {
