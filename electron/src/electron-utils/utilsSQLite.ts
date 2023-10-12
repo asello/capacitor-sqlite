@@ -529,6 +529,13 @@ export class UtilsSQLite {
           mVal.push(null);
         }
       }
+
+      for(let i = 0; i < mVal.length; i++) {
+        if(Array.isArray(mVal[i]) && mVal[i].length > 0 && typeof(mVal[i][0]) === "number") {
+            mVal[i] = Buffer.from(mVal[i]);
+        }
+      }
+
       const ret: RunResults = this.runExec(mDB, sqlStmt, mVal, returnMode);
       if (ret.values != null) {
         result.values = ret.values;
