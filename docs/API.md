@@ -8,9 +8,9 @@
 
 To easy the way to use the `@asello/capacitor-sqlite` plugin and its ability to be use in conjonction with other plugins (`typeorm`, `spatialite`, ...), two connection wrappers have been associated.
 
-- [API_Connection_Wrapper_Documentation](https://github.com/capacitor-community/sqlite/blob/master/docs/APIConnection.md)
+- [API_Connection_Wrapper_Documentation](https://github.com/asello/capacitor-sqlite/blob/master/docs/APIConnection.md)
 
-- [API_DB_Connection_Wrapper_Documentation](https://github.com/capacitor-community/sqlite/blob/master/docs/APIDBConnection.md)
+- [API_DB_Connection_Wrapper_Documentation](https://github.com/asello/capacitor-sqlite/blob/master/docs/APIDBConnection.md)
 
 ## Databases Location
 
@@ -103,7 +103,7 @@ Unexpected or erroneous behaviour users of this library have encountered.
 
 <ins>The Problem:</ins>
 
-In https://github.com/capacitor-community/sqlite/issues/393 a user of this library
+In https://github.com/asello/capacitor-sqlite/issues/393 a user of this library
 experienced bugs when running a statement that itself contained multiple update statements.
 
 The statement executed fine on the web version of this library (sql-wasm.wasm).
@@ -1555,7 +1555,7 @@ END;
 
 Your Application has to manage the synchronization process:
 
-- transfer of the whole databases when Online for the first time using `http requests` and convert the response to Json Object as described in [ImportExportJson_Documentation](https://github.com/capacitor-community/sqlite/blob/master/docs/ImportExportJson.md)
+- transfer of the whole databases when Online for the first time using `http requests` and convert the response to Json Object as described in [ImportExportJson_Documentation](https://github.com/asello/capacitor-sqlite/blob/master/docs/ImportExportJson.md)
 
 - use the `ìmportFromJson method` with a mode **full**
 

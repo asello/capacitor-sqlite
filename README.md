@@ -12,7 +12,7 @@
 <br>
 <p align="center">
   <img src="https://img.shields.io/maintenance/yes/2023?style=flat-square" />
-  <a href="https://github.com/capacitor-community/sqlite/actions?query=workflow%3A%22CI%22"><img src="https://img.shields.io/github/workflow/status/capacitor-community/sqlite/CI?style=flat-square" /></a>
+  <a href="https://github.com/asello/capacitor-sqlite/actions?query=workflow%3A%22CI%22"><img src="https://img.shields.io/github/workflow/status/asello/capacitor-sqlite/CI?style=flat-square" /></a>
   <a href="https://www.npmjs.com/package/@asello/capacitor-sqlite"><img src="https://img.shields.io/npm/l/@asello/capacitor-sqlite?style=flat-square" /></a>
 <br>
   <a href="https://www.npmjs.com/package/@asello/capacitor-sqlite"><img src="https://img.shields.io/npm/dw/@asello/capacitor-sqlite?style=flat-square" /></a>
@@ -89,9 +89,9 @@ export default config;
 ## More Reading:
 
  - [Updating to Capacitor 5](https://capacitorjs.com/docs/updating/5-0)
- - [Releases](https://github.com/capacitor-community/sqlite/blob/master/info_releases.md)
- - [Changelog](https://github.com/capacitor-community/sqlite/blob/master/CHANGELOG.md)
- - [Issues](https://github.com/capacitor-community/sqlite/issues)
+ - [Releases](https://github.com/asello/capacitor-sqlite/blob/master/info_releases.md)
+ - [Changelog](https://github.com/asello/capacitor-sqlite/blob/master/CHANGELOG.md)
+ - [Issues](https://github.com/asello/capacitor-sqlite/issues)
  - [Capacitor documentation](https://capacitorjs.com/docs/)
  - [Datatypes In SQLite Version 3](https://www.sqlite.org/datatype3.html)
  - [IncrementalUpgradeDatabaseVersion](https://capacitorjs.com/docs/IncrementalUpgradeDatabaseVersion.md)
@@ -129,7 +129,7 @@ You'll need the usual capacitor/android/react npm script to build and copy the a
           exclude 'build-data.properties'
       }
   ```
-  See [#301](https://github.com/capacitor-community/sqlite/issues/301) and [SO question](https://stackoverflow.com/questions/63291529/how-to-fix-more-than-one-file-was-found-with-os-independent-path-build-data-pro) for more information.
+  See [#301](https://github.com/asello/capacitor-sqlite/issues/301) and [SO question](https://stackoverflow.com/questions/63291529/how-to-fix-more-than-one-file-was-found-with-os-independent-path-build-data-pro) for more information.
 
  - Check/Add the following:
     Gradle JDK version 17
@@ -183,7 +183,7 @@ npm install --save-dev @types/better-sqlite3
 npm install --save-dev @types/electron-json-storage
 npm install --save-dev @types/crypto-js
 ```
-- **Important**: `node-fetch` version must be `<=2.6.7`; otherwise [you'll get an error](https://github.com/capacitor-community/sqlite/issues/349 "you'll get an error ERR_REQUIRE_ESM") running the app. 
+- **Important**: `node-fetch` version must be `<=2.6.7`; otherwise [you'll get an error](https://github.com/asello/capacitor-sqlite/issues/349 "you'll get an error ERR_REQUIRE_ESM") running the app. 
 
 - **Important**: if you are using `@capacitor-community/electron v5` 
   - you have to stick to Electron@25.8.4 till further notice so do:
@@ -267,38 +267,38 @@ npm install --save-dev electron-builder@24.6.4
 
 ## Documentation & APIs
 
-- [API](https://github.com/capacitor-community/sqlite/blob/master/docs/API.md)
+- [API](https://github.com/asello/capacitor-sqlite/blob/master/docs/API.md)
 
-- [API Connection Wrapper](https://github.com/capacitor-community/sqlite/blob/master/docs/APIConnection.md)
+- [API Connection Wrapper](https://github.com/asello/capacitor-sqlite/blob/master/docs/APIConnection.md)
 
-- [API DB Connection Wrapper](https://github.com/capacitor-community/sqlite/blob/master/docs/APIDBConnection.md)
+- [API DB Connection Wrapper](https://github.com/asello/capacitor-sqlite/blob/master/docs/APIDBConnection.md)
 
-- [Import-Export Json](https://github.com/capacitor-community/sqlite/blob/master/docs/ImportExportJson.md)
+- [Import-Export Json](https://github.com/asello/capacitor-sqlite/blob/master/docs/ImportExportJson.md)
 
-- [Upgrade Database Version](https://github.com/capacitor-community/sqlite/blob/master/docs/UpgradeDatabaseVersion.md)
+- [Upgrade Database Version](https://github.com/asello/capacitor-sqlite/blob/master/docs/UpgradeDatabaseVersion.md)
 
-- [Migrating Cordova Databases](https://github.com/capacitor-community/sqlite/blob/master/docs/MigratingCordovaDatabases.md)
+- [Migrating Cordova Databases](https://github.com/asello/capacitor-sqlite/blob/master/docs/MigratingCordovaDatabases.md)
 
-- [Type ORM](https://github.com/capacitor-community/sqlite/blob/master/docs/TypeORM-Usage.md)
+- [Type ORM](https://github.com/asello/capacitor-sqlite/blob/master/docs/TypeORM-Usage.md)
 
-- [Web Usage](https://github.com/capacitor-community/sqlite/blob/master/docs/Web-Usage.md)
+- [Web Usage](https://github.com/asello/capacitor-sqlite/blob/master/docs/Web-Usage.md)
 
-- [Non Conformed Databases](https://github.com/capacitor-community/sqlite/blob/master/docs/NonConformedDatabases.md)
+- [Non Conformed Databases](https://github.com/asello/capacitor-sqlite/blob/master/docs/NonConformedDatabases.md)
 
-- [Biometric Authentication](https://github.com/capacitor-community/sqlite/blob/master/docs/Biometric-Authentication.md)
+- [Biometric Authentication](https://github.com/asello/capacitor-sqlite/blob/master/docs/Biometric-Authentication.md)
 
-- [Enable SQLite Schema Error Syntax Highlighting](https://github.com/capacitor-community/sqlite/blob/master/docs/SyntaxScanner-For-SQLite-Code.md)
+- [Enable SQLite Schema Error Syntax Highlighting](https://github.com/asello/capacitor-sqlite/blob/master/docs/SyntaxScanner-For-SQLite-Code.md)
 
-- [Electron Better SQLite3](https://github.com/capacitor-community/sqlite/blob/master/docs/ElectronBetterSQLite3.md)
+- [Electron Better SQLite3](https://github.com/asello/capacitor-sqlite/blob/master/docs/ElectronBetterSQLite3.md)
 
-- [Enable minified build on Android](https://github.com/capacitor-community/sqlite/blob/master/docs/AndroidMinify.md)
+- [Enable minified build on Android](https://github.com/asello/capacitor-sqlite/blob/master/docs/AndroidMinify.md)
 
 
 ## Applications demonstrating the use of the plugin and related documentation
 
 ### Ionic/Angular
 
-- [Ionic/Angular Usage Documentation](https://github.com/capacitor-community/sqlite/blob/master/docs/Ionic-Angular-Usage.md)
+- [Ionic/Angular Usage Documentation](https://github.com/asello/capacitor-sqlite/blob/master/docs/Ionic-Angular-Usage.md)
 
 - [ionic7-angular-sqlite-starter](https://github.com/jepiqueau/ionic7-angular-sqlite-starter) Ionic 7 Angular 16 Capacitor 5 SQLite CRUD operations.
 
@@ -312,7 +312,7 @@ npm install --save-dev electron-builder@24.6.4
 
 ### Ionic/React
 
-- [Ionic/React Usage Documentation](https://github.com/capacitor-community/sqlite/blob/master/docs/Ionic-React-Usage.md)
+- [Ionic/React Usage Documentation](https://github.com/asello/capacitor-sqlite/blob/master/docs/Ionic-React-Usage.md)
 
 - [react-sqlite-app-starter](https://github.com/jepiqueau/react-sqlite-app-starter)
 
@@ -326,7 +326,7 @@ npm install --save-dev electron-builder@24.6.4
 
 ### Ionic/Vue
 
-- [Ionic/Vue Usage Documentation](https://github.com/capacitor-community/sqlite/blob/master/docs/Ionic-Vue-Usage.md)
+- [Ionic/Vue Usage Documentation](https://github.com/asello/capacitor-sqlite/blob/master/docs/Ionic-Vue-Usage.md)
 
 - [vue-sqlite-app-starter](https://github.com/jepiqueau/vue-sqlite-app-starter)
 

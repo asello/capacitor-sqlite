@@ -10,7 +10,7 @@ This was only tested with Intellij Ultimate syntax highlighting that comes when 
 ## Instructions:
 
 In for example H2-database, with a normal database file you can always connect it to the IDE and get syntax highlighting.
-This capacitor-community/sqlite plugin however doesn't use a "normal database file" however. 
+This asello/capacitor-sqlite plugin however doesn't use a "normal database file" however. 
 
 Instead it uses either the IOS/Android emulator or real phone db-file, or if you are using the web version of this plugin then it is using the sql-wasm.wasm file. 
 All of those database files cannot be read from an IDE like IntelliJ and thus it might give you a lot of errors when looking at your SQLite code snippets in typescript saying things like "table not found" etc.

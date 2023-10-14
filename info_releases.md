@@ -128,7 +128,7 @@ An example of using this new feature is given in [solidjs-vite-sqlite-app](https
 
 - iOS & Android only
   Adding biometric FaceID/TouchID to secure the pass phrase in the Keychain/SharedPreferences stores. see:
-   [Biometric_Authentication](https://github.com/capacitor-community/sqlite/blob/master/docs/Biometric-Authentication.md)
+   [Biometric_Authentication](https://github.com/asello/capacitor-sqlite/blob/master/docs/Biometric-Authentication.md)
 
 - iOS only
   Fix identical pass phrase stored in the Keychain for differents applications using the plugin by adding an application prefix to the Keychain account.
