@@ -1,6 +1,6 @@
 {
     "name": "@asello/capacitor-sqlite",
-    "version": "6.0.0",
+    "version": "6.0.1",
     "description": "Community plugin for native & electron SQLite databases",
     "main": "dist/plugin.cjs.js",
     "module": "dist/esm/index.js",
@@ -78,9 +78,6 @@
         "swiftlint": "^2.0.0",
         "typescript": "~5.7.2"
     },
-    "peerDependencies": {
-        "@capacitor/core": "^5.0.0"
-    },
     "prettier": "@ionic/prettier-config",
     "swiftlint": "@ionic/swiftlint-config",
     "eslintConfig": {
@@ -154,9 +151,6 @@
             "rollup": "^3.29.2",
             "swiftlint": "^1.0.2",
             "typescript": "~5.2.2"
-        },
-        "peerDependencies": {
-            "@capacitor/core": "^5.0.0"
         },
         "prettier": "@ionic/prettier-config",
         "swiftlint": "@ionic/swiftlint-config",
