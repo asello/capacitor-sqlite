@@ -146,17 +146,15 @@ public class CapacitorSQLitePlugin extends Plugin {
         oldpassphrase = call.getString("oldpassphrase");
         if (implementation != null) {
             getActivity()
-                .runOnUiThread(
-                    () -> {
-                        try {
-                            implementation.changeEncryptionSecret(call, passphrase, oldpassphrase);
-                            rHandler.retResult(call, null, null);
-                        } catch (Exception e) {
-                            String msg = "ChangeEncryptionSecret: " + e.getMessage();
-                            rHandler.retResult(call, null, msg);
-                        }
+                .runOnUiThread(() -> {
+                    try {
+                        implementation.changeEncryptionSecret(call, passphrase, oldpassphrase);
+                        rHandler.retResult(call, null, null);
+                    } catch (Exception e) {
+                        String msg = "ChangeEncryptionSecret: " + e.getMessage();
+                        rHandler.retResult(call, null, msg);
                     }
-                );
+                });
         } else {
             rHandler.retResult(call, null, loadMessage);
         }
@@ -796,10 +794,9 @@ public class CapacitorSQLitePlugin extends Plugin {
      */
     @PluginMethod
     public void getMigratableDbList(PluginCall call) {
-        String folderPath = null;
+        String folderPath;
         if (!call.getData().has("folderPath")) {
-            String msg = "getMigratableDbList: Must provide a folder path";
-            rHandler.retValues(call, new JSArray(), msg);
+            folderPath = "default";
         } else {
             folderPath = call.getString("folderPath");
         }
@@ -1536,12 +1533,10 @@ public class CapacitorSQLitePlugin extends Plugin {
                     getActivity().runOnUiThread(() -> rHandler.retResult(call, null, null));
                 } catch (Exception e) {
                     getActivity()
-                        .runOnUiThread(
-                            () -> {
-                                String msg = "GetFromHTTPRequest: " + e.getMessage();
-                                rHandler.retResult(call, null, msg);
-                            }
-                        );
+                        .runOnUiThread(() -> {
+                            String msg = "GetFromHTTPRequest: " + e.getMessage();
+                            rHandler.retResult(call, null, msg);
+                        });
                 }
             };
             Thread myHttpThread = new Thread(setHTTPRunnable);

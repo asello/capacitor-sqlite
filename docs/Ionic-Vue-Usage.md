@@ -98,7 +98,8 @@ Now the Singleton SQLite Hook `$sqlite`and Existing Connections Store `$existing
 As for the Web platform, the `jeep-sqlite` Stencil component is used and requires the DOM:
 the declaration of the SQLite Hook has to be moved to the App.vue
 
-So the `main.ts`file 
+So the `main.ts`file
+
 ```js
 ...
 import { defineCustomElements as jeepSqlite, applyPolyfills } from "jeep-sqlite/loader";
@@ -143,7 +144,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
     // here you can initialize some database schema if required
 
-    // example: database creation with standard SQLite statements 
+    // example: database creation with standard SQLite statements
     const ret = await sqlite.checkConnectionsConsistency();
     const isConn = (await sqlite.isConnection("db_tab3")).result;
     let db: SQLiteDBConnection
@@ -165,13 +166,13 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
     await sqlite.closeConnection("db_tab3");
 
-    // example: database creation from importFromJson 
+    // example: database creation from importFromJson
     const result = await sqlite.isJsonValid(JSON.stringify(schemaToImport179));
     if(!result.result) {
       throw new Error(`isJsonValid: "schemaToImport179" is not valid`);
     }
     // full import
-    const resJson = await sqlite.importFromJson(JSON.stringify(schemaToImport179));    
+    const resJson = await sqlite.importFromJson(JSON.stringify(schemaToImport179));
     if(resJson.changes && resJson.changes.changes && resJson.changes.changes < 0) {
       throw new Error(`importFromJson: "full" failed`);
     }
@@ -188,6 +189,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 ```
 
 and the `App.vue`file
+
 ```js
 <template>
   <ion-app>
@@ -225,7 +227,7 @@ export default defineComponent({
             contentMessage.message.value.concat(`${progress}\n`));
         }
       }
-      if( app != null) { 
+      if( app != null) {
         // !!!!! if you do not want to use the progress events !!!!!
         // since vue-sqlite-hook 2.1.1
         // app.appContext.config.globalProperties.$sqlite = useSQLite()
@@ -243,8 +245,8 @@ export default defineComponent({
 </script>
 
 ```
-Now the Singleton SQLite Hook `$sqlite`and Existing Connections Store `$existingConn` can be use in app's components
 
+Now the Singleton SQLite Hook `$sqlite`and Existing Connections Store `$existingConn` can be use in app's components
 
 ### Vue SQLite Hook Use in Components
 
@@ -318,9 +320,9 @@ export default defineComponent({
                 setLog(log.value.concat("> createConnection " +
                                             " 'NoEncryption' successful\n"));
                 console.log("after createConnection")
-                // check if the databases exist 
+                // check if the databases exist
                 // and delete it for multiple successive tests
-                await deleteDatabase(db);         
+                await deleteDatabase(db);
                 // open NoEncryption database
                 await db.open();
                 setLog(log.value.concat("> open 'NoEncryption' successful\n"));
@@ -330,9 +332,9 @@ export default defineComponent({
                             res.changes.changes !== 1){
                     errMess = `Execute dropTablesTablesNoEncryption changes < 0`;
                     return false;
-                } 
+                }
                 setLog(log.value.concat(" Execute1 successful\n"));
-                
+
                 // Create tables
                 res = await db.execute(createTablesNoEncryption);
                 if (res.changes.changes < 0) {
@@ -356,7 +358,7 @@ export default defineComponent({
                     return false;
                 }
                 setLog(log.value.concat(" Select1 successful\n"));
-                // add one user with statement and values              
+                // add one user with statement and values
                 let sqlcmd = "INSERT INTO users (name,email,age) VALUES (?,?,?)";
                 let values: Array<any>  = ["Simpson","Simpson@example.com",69];
                 res = await db.run(sqlcmd,values);
@@ -366,7 +368,7 @@ export default defineComponent({
                     return false;
                 }
                 setLog(log.value.concat(" Run1 successful\n"));
-                // add one user with statement              
+                // add one user with statement
                 sqlcmd = `INSERT INTO users (name,email,age) VALUES `+
                                 `("Brown","Brown@example.com",15)`;
                 res = await db.run(sqlcmd);
@@ -393,9 +395,9 @@ export default defineComponent({
                 }
                 setLog(log.value
                         .concat(" Select with filter on age successful\n"));
-                // Close Connection NoEncryption        
-                await sqlite.closeConnection("NoEncryption"); 
-                        
+                // Close Connection NoEncryption
+                await sqlite.closeConnection("NoEncryption");
+
                 setLog(log.value
                     .concat("* Ending testDatabaseNoEncryption *\n"));
                 return true;
@@ -404,7 +406,7 @@ export default defineComponent({
                 return false;
             }
         };
-        
+
         onMounted(async () => {
             // Running the test
             console.log('$$$ Start NoEncryptionTest on Mounted $$$')
@@ -431,6 +433,7 @@ export default defineComponent({
 });
 </script>
 ```
+
 Where
 
 - `@/utils/utils-db-no-encryption`
@@ -585,11 +588,11 @@ import { SQLiteDBConnection } from '@asello/capacitor-sqlite';
 export async function deleteDatabase(db: SQLiteDBConnection): Promise<void> {
   try {
     const ret: any = await db.isExists();
-    if(ret.result) {
+    if (ret.result) {
       const dbName = db.getConnectionDBName();
-      console.log("$$$ database " + dbName + " before delete");
+      console.log('$$$ database ' + dbName + ' before delete');
       await db.delete();
-      console.log("$$$ database " + dbName + " after delete " + ret.result);
+      console.log('$$$ database ' + dbName + ' after delete ' + ret.result);
       return Promise.resolve();
     } else {
       return Promise.resolve();
@@ -601,6 +604,7 @@ export async function deleteDatabase(db: SQLiteDBConnection): Promise<void> {
 ```
 
 - `composables/state.ts`
+
 ```ts
 import { readonly, ref } from 'vue';
 
@@ -610,8 +614,7 @@ export function useState(initialState: any): any {
   const setState = (newState: any) => {
     state.value = newState;
   };
-  
+
   return [readonly(state), setState];
 }
 ```
-

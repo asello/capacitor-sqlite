@@ -231,7 +231,7 @@ class ExportToJson {
                 }
 
                 switch expMode {
-                case "partial" :
+                case "partial":
                     tables = try ExportToJson
                         .getTablesPartial(mDB: mDB,
                                           resTables: resTables)
@@ -867,18 +867,20 @@ class ExportToJson {
                                                           with: ",")
                                     .replacingOccurrences(of: ", ",
                                                           with: ",")
-                            case "PRIMARY":
+                            case "PRIMARY", "UNIQUE":
+                                let prefix = (String(row[0]).uppercased() == "PRIMARY") ? "CPK_" : "CUN_"
+
                                 guard let oPar = rstr.firstIndex(of: "(")
                                 else {
                                     var msg: String = "Create Schema "
-                                    msg.append("PRIMARY KEY no '('")
+                                    msg.append("PRIMARY/UNIQUE KEY no '('")
                                     throw ExportToJsonError
                                     .createSchema(message: msg)
                                 }
                                 guard let cPar = rstr.firstIndex(of: ")")
                                 else {
                                     var msg: String = "Create Schema "
-                                    msg.append("PRIMARY KEY no ')'")
+                                    msg.append("PRIMARY/UNIQUE KEY no ')'")
                                     throw ExportToJsonError
                                     .createSchema(message: msg)
                                 }
@@ -886,7 +888,7 @@ class ExportToJson {
                                                 after: oPar)..<cPar]
                                 row[1] = rstr[rstr.index(rstr.startIndex,
                                                          offsetBy: 0)..<rstr.endIndex]
-                                columns["constraint"] = "CPK_" + String(row[0])
+                                columns["constraint"] = prefix + String(row[0])
                                     .replacingOccurrences(of: "§",
                                                           with: "_")
                                     .replacingOccurrences(of: "_ ",
@@ -1197,6 +1199,8 @@ class ExportToJson {
                 row.append(val)
             } else if values[pos][names[jpos]] is Int64 && (
                         INTEGERAFFINITY.contains(types[jpos].uppercased()) ||
+                            INTEGERAFFINITY.contains(types[jpos]
+                                                        .components(separatedBy: "(")[0].uppercased()) ||
                             NUMERICAFFINITY.contains(types[jpos].uppercased())) {
                 guard let val = values[pos][names[jpos]] as? Int64
                 else {
@@ -1224,11 +1228,19 @@ class ExportToJson {
                         message: "Error value must be double")
                 }
                 row.append(val)
+            } else if values[pos][names[jpos]] is [UInt8] &&
+                        BLOBAFFINITY.contains(types[jpos].uppercased()) {
+                guard let val = values[pos][names[jpos]] as? [UInt8]
+                else {
+                    throw ExportToJsonError.createValues(
+                        message: "Error value must be [UInt8]")
+                }
+                row.append(val)
 
             } else {
                 throw ExportToJsonError.createValues(
                     message: "Error value is not (string, nsnull," +
-                        "int64,double")
+                        "int64,double,[UInt8]) ")
             }
         }
         return row

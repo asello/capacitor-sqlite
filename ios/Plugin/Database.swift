@@ -214,7 +214,7 @@ class Database {
             let msg: String = "Failed in deleteBackupDB \(message)"
             throw DatabaseError.open(message: msg)
         } catch UtilsUpgradeError.onUpgradeFailed(let message) {
-            //restore the database
+            // restore the database
             do {
                 try UtilsSQLCipher
                     .restoreDB(databaseLocation: databaseLocation,
@@ -688,6 +688,10 @@ class Database {
             if isExists {
                 // Set the last exported date
                 try ExportToJson.setLastExportDate(mDB: self, sTime: syncTime)
+            } else {
+                if expMode == "partial" {
+                    throw DatabaseError.exportToJson(message: "No sync_table available")
+                }
             }
             // Launch the export process
             let data: [String: Any] = [

@@ -23,18 +23,18 @@ A react hook specific to `@asello/capacitor-sqlite` plugin has been developed to
 
 To install it in your Ionic/React App
 
- - `for Native Apps`
+- `for Native Apps`
 
 ```bash
     npm i --save-dev @asello/capacitor-sqlite@latest
     npm i --save-dev react-sqlite-hook@latest
 ```
 
- - `for Web Browser` 
+- `for Web Browser`
+
 ```bash
     npm i --save-dev jeep-sqlite@latest
 ```
-
 
 ### React SQLite Hook Declaration for platforms other than Web
 
@@ -82,6 +82,7 @@ export default App;
 Now the Singleton SQLite Hook `sqlite`and Existing Connections Store `existingConn` can be used in other components
 
 ### React SQLite Hook Declaration for platforms including Web
+
 As for the Web platform, the `jeep-sqlite` Stencil component is used and requires the DOM it is then defined and initialized in the `index.tsx` file.
 
 ```ts
@@ -90,21 +91,30 @@ import { createRoot } from 'react-dom/client';
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
-import { defineCustomElements as jeepSqlite, applyPolyfills, JSX as LocalJSX  } from "jeep-sqlite/loader";
+import {
+  defineCustomElements as jeepSqlite,
+  applyPolyfills,
+  JSX as LocalJSX,
+} from 'jeep-sqlite/loader';
 import { HTMLAttributes } from 'react';
 import { Capacitor } from '@capacitor/core';
-import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection } from '@asello/capacitor-sqlite';
+import {
+  CapacitorSQLite,
+  SQLiteConnection,
+  SQLiteDBConnection,
+} from '@asello/capacitor-sqlite';
 
 type StencilToReact<T> = {
-  [P in keyof T]?: T[P] & Omit<HTMLAttributes<Element>, 'className'> & {
-    class?: string;
-  };
-} ;
+  [P in keyof T]?: T[P] &
+    Omit<HTMLAttributes<Element>, 'className'> & {
+      class?: string;
+    };
+};
 
 declare global {
   export namespace JSX {
-    interface IntrinsicElements extends StencilToReact<LocalJSX.IntrinsicElements> {
-    }
+    interface IntrinsicElements
+      extends StencilToReact<LocalJSX.IntrinsicElements> {}
   }
 }
 
@@ -114,21 +124,27 @@ applyPolyfills().then(() => {
 window.addEventListener('DOMContentLoaded', async () => {
   console.log('$$$ in index $$$');
   const platform = Capacitor.getPlatform();
-  const sqlite: SQLiteConnection = new SQLiteConnection(CapacitorSQLite)
+  const sqlite: SQLiteConnection = new SQLiteConnection(CapacitorSQLite);
   try {
-    if(platform === "web") {
-      const jeepEl = document.createElement("jeep-sqlite");
+    if (platform === 'web') {
+      const jeepEl = document.createElement('jeep-sqlite');
       document.body.appendChild(jeepEl);
       await customElements.whenDefined('jeep-sqlite');
       await sqlite.initWebStore();
     }
     const ret = await sqlite.checkConnectionsConsistency();
-    const isConn = (await sqlite.isConnection("db_issue9", false)).result;
-    var db: SQLiteDBConnection
+    const isConn = (await sqlite.isConnection('db_issue9', false)).result;
+    var db: SQLiteDBConnection;
     if (ret.result && isConn) {
-      db = await sqlite.retrieveConnection("db_issue9", false);
+      db = await sqlite.retrieveConnection('db_issue9', false);
     } else {
-      db = await sqlite.createConnection("db_issue9", false, "no-encryption", 1, false);
+      db = await sqlite.createConnection(
+        'db_issue9',
+        false,
+        'no-encryption',
+        1,
+        false,
+      );
     }
 
     await db.open();
@@ -137,40 +153,40 @@ window.addEventListener('DOMContentLoaded', async () => {
       id INTEGER PRIMARY KEY NOT NULL,
       name TEXT NOT NULL
     );
-    `
+    `;
 
     const res: any = await db.execute(query);
     console.log(`res: ${JSON.stringify(res)}`);
     await db.close();
-    await sqlite.closeConnection("db_issue9", false);
+    await sqlite.closeConnection('db_issue9', false);
     const container = document.getElementById('root');
     const root = createRoot(container!);
     root.render(
       <React.StrictMode>
         <App />
-      </React.StrictMode>
+      </React.StrictMode>,
     );
-    
+
     // If you want your app to work offline and load faster, you can change
     // unregister() to register() below. Note this comes with some pitfalls.
     // Learn more about service workers: https://cra.link/PWA
     serviceWorkerRegistration.unregister();
-    
+
     // If you want to start measuring performance in your app, pass a function
     // to log results (for example: reportWebVitals(console.log))
     // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
     reportWebVitals();
   } catch (err) {
     console.log(`Error: ${err}`);
-    throw new Error(`Error: ${err}`)
+    throw new Error(`Error: ${err}`);
   }
 });
-
 ```
+
 Then the `react-sqlite-hook` is initialized in the `App.tsx` file
 
 ```ts
-import React, { useState, useRef }  from 'react';
+import React, { useState, useRef } from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import {
   IonApp,
@@ -181,7 +197,7 @@ import {
   IonTabButton,
   IonTabs,
   setupIonicReact,
-  useIonModal
+  useIonModal,
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { ellipse, square, triangle } from 'ionicons/icons';
@@ -212,12 +228,12 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 
 interface JsonListenerInterface {
-  jsonListeners: boolean,
-  setJsonListeners: React.Dispatch<React.SetStateAction<boolean>>,
+  jsonListeners: boolean;
+  setJsonListeners: React.Dispatch<React.SetStateAction<boolean>>;
 }
 interface existingConnInterface {
-  existConn: boolean,
-  setExistConn: React.Dispatch<React.SetStateAction<boolean>>,
+  existConn: boolean;
+  setExistConn: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 // Singleton SQLite Hook
@@ -231,7 +247,7 @@ setupIonicReact();
 
 const App: React.FC = () => {
   const [existConn, setExistConn] = useState(false);
-  existingConn = {existConn: existConn, setExistConn: setExistConn};
+  existingConn = { existConn: existConn, setExistConn: setExistConn };
 
   // !!!!! if you do not want to use the progress events !!!!!
   // since react-sqlite-hook 2.1.0
@@ -242,7 +258,6 @@ const App: React.FC = () => {
 
   sqlite = useSQLite();
   console.log(`$$$ in App sqlite.isAvailable  ${sqlite.isAvailable} $$$`);
-
 
   return (
     <IonApp>
@@ -263,7 +278,6 @@ const App: React.FC = () => {
             </Route>
             <Route path="/test/:name" component={ViewTest} />
             <Route path="/message/:id" component={ViewMessage} />
-  
           </IonRouterOutlet>
           <IonTabBar slot="bottom">
             <IonTabButton tab="tab1" href="/tab1">
@@ -286,7 +300,6 @@ const App: React.FC = () => {
 };
 
 export default App;
-
 ```
 
 ### React SQLite Hook Use in Components
@@ -298,176 +311,185 @@ import React, { useState, useEffect, useRef } from 'react';
 import './Test2dbs.css';
 import TestOutput from './TestOutput';
 
-import { createTablesNoEncryption, importTwoUsers } from '../Utils/noEncryptionUtils';
+import {
+  createTablesNoEncryption,
+  importTwoUsers,
+} from '../Utils/noEncryptionUtils';
 import { createSchemaContacts, setContacts } from '../Utils/encryptedSetUtils';
-import { deleteDatabase } from '../Utils/deleteDBUtil';     
-      
+import { deleteDatabase } from '../Utils/deleteDBUtil';
+
 import { sqlite, existingConn } from '../App';
 import { Dialog } from '@capacitor/dialog';
 
 const Test2dbs: React.FC = () => {
-    const myRef = useRef(false);
-    const myLog: string[] = [];
-    const errMess = useRef("");
-    const [output, setOutput] = useState({log: myLog});
-    const showAlert = async (message: string) => {
-        await Dialog.alert({
-          title: 'Error Dialog',
-          message: message,
-        });
-    };
-    const testtwodbs = async (): Promise<Boolean>  => {
-        setOutput((output: { log: any; }) => ({log: output.log}));
+  const myRef = useRef(false);
+  const myLog: string[] = [];
+  const errMess = useRef('');
+  const [output, setOutput] = useState({ log: myLog });
+  const showAlert = async (message: string) => {
+    await Dialog.alert({
+      title: 'Error Dialog',
+      message: message,
+    });
+  };
+  const testtwodbs = async (): Promise<Boolean> => {
+    setOutput((output: { log: any }) => ({ log: output.log }));
 
-        myLog.push("* Starting testTwoDBS *\n");
-        try {
-            const platform = (await sqlite.getPlatform()).platform;
-            // initialize the connection
-            const db = await sqlite
-                .createConnection("testNew", false, "no-encryption", 1);
-            const db1 = await sqlite
-                .createConnection("testSet", true, "secret", 1);
-
-            // check if the databases exist 
-            // and delete it for multiple successive tests
-            await deleteDatabase(db);
-            await deleteDatabase(db1);
-
-            // open db testNew
-            await db.open();
-            myLog.push("> open 'testNew' successful\n");
-
-            // create tables in db
-            let ret: any = await db.execute(createTablesNoEncryption);
-            if (ret.changes.changes < 0) {
-                errMess.current = `Execute changes < 0`;
-                setOutput(() => ({log: myLog}));
-                return false;
-            }
-
-            // create synchronization table 
-            ret = await db.createSyncTable();
-            if (ret.changes.changes < 0) {
-                errMess.current = `CreateSyncTable changes < 0`;
-                setOutput(() => ({log: myLog}));
-                return false;
-            }
-
-            // set the synchronization date
-            const syncDate: string = "2020-11-25T08:30:25.000Z";
-            await db.setSyncDate(syncDate);
-
-            // add two users in db
-            ret = await db.execute(importTwoUsers);
-            if (ret.changes.changes !== 2) {
-                errMess.current = `Execute importTwoUsers changes != 2`;
-                setOutput(() => ({log: myLog}));
-                return false;
-            }
-
-            // select all users in db
-            ret = await db.query("SELECT * FROM users;");
-
-            if(ret.values.length !== 2 || ret.values[0].name !== "Whiteley" ||
-                                ret.values[1].name !== "Jones") {
-                errMess.current = `Query not returning 2 values`;
-                setOutput(() => ({log: myLog}));
-                return false;
-            }
-
-            // open db testSet
-            await db1.open();
-            myLog.push("> open 'testSet' successful\n");
-            // create tables in db1
-            ret = await db1.execute(createSchemaContacts);
-            if (ret.changes.changes < 0) {
-                errMess.current = `Execute createSchemaContacts changes < 0`;
-                setOutput(() => ({log: myLog}));
-                return false;
-            }
-            // load setContacts in db1
-            ret = await db1.executeSet(setContacts);
-            if (ret.changes.changes !== 5) {
-                errMess.current = `ExecuteSet setContacts changes != 5`;
-                setOutput(() => ({log: myLog}));
-                return false;
-            }
-
-            // select users where company is NULL in db
-            ret = await db.query("SELECT * FROM users WHERE company IS NULL;");
-            if(ret.values.length !== 2 || ret.values[0].name !== "Whiteley" ||
-                                ret.values[1].name !== "Jones") {
-                errMess.current = `Query Company is NULL not returning 2 values`;
-                setOutput(() => ({log: myLog}));
-                return false;
-            }
-            // add one user with statement and values              
-            let sqlcmd: string = 
-                "INSERT INTO users (name,email,age) VALUES (?,?,?)";
-            let values: Array<any>  = ["Simpson","Simpson@example.com",69];
-            ret = await db.run(sqlcmd,values);
-            if(ret.changes.lastId !== 3) {
-                errMess.current = `Run lastId != 3`;
-                setOutput(() => ({log: myLog}));
-                return false;
-            }
-            // add one user with statement              
-            sqlcmd = `INSERT INTO users (name,email,age) VALUES ` + 
-                            `("Brown","Brown@example.com",15)`;
-            ret = await db.run(sqlcmd);
-            if(ret.changes.lastId !== 4) {
-                errMess.current = `Run lastId != 4`;
-                setOutput(() => ({log: myLog}));
-                return false;
-            }
-            if (platform === "web") {
-                await sqlite.saveToStore("testNew");
-                await sqlite.saveToStore("testSet");
-            }
-            myLog.push("* Ending testTwoDBS *\n");
-            existingConn.setExistConn(true);
-            return true;
-        } catch (err:any) {
-            errMess.current = `${err.message}`;
-            return false;
-        }
-    }
-
-    useEffect(() => {
-        if(sqlite.isAvailable) {
-          if (myRef.current === false) {
-            myRef.current = true;
-    
-            testtwodbs().then(async res => {
-                if(res) {    
-                    myLog.push("\n* The set of tests was successful *\n");
-                } else {
-                    myLog.push("\n* The set of tests failed *\n");
-                    await showAlert(errMess.current);
-                }
-                setOutput(() => ({log: myLog}));
-              
-            });
-          }
-        } else {
-            sqlite.getPlatform().then(async (ret: { platform: string; })  =>  {
-                myLog.push("\n* Not available for " + 
-                                ret.platform + " platform *\n");
-                await showAlert(errMess.current);
-                setOutput(() => ({log: myLog}));
-            });         
-        }
-    
-      });
-     
-      return (
-        <TestOutput dataLog={output.log} errMess={errMess.current}></TestOutput> 
+    myLog.push('* Starting testTwoDBS *\n');
+    try {
+      const platform = (await sqlite.getPlatform()).platform;
+      // initialize the connection
+      const db = await sqlite.createConnection(
+        'testNew',
+        false,
+        'no-encryption',
+        1,
       );
-    };
-    
-export default Test2dbs;
+      const db1 = await sqlite.createConnection('testSet', true, 'secret', 1);
 
-``` 
+      // check if the databases exist
+      // and delete it for multiple successive tests
+      await deleteDatabase(db);
+      await deleteDatabase(db1);
+
+      // open db testNew
+      await db.open();
+      myLog.push("> open 'testNew' successful\n");
+
+      // create tables in db
+      let ret: any = await db.execute(createTablesNoEncryption);
+      if (ret.changes.changes < 0) {
+        errMess.current = `Execute changes < 0`;
+        setOutput(() => ({ log: myLog }));
+        return false;
+      }
+
+      // create synchronization table
+      ret = await db.createSyncTable();
+      if (ret.changes.changes < 0) {
+        errMess.current = `CreateSyncTable changes < 0`;
+        setOutput(() => ({ log: myLog }));
+        return false;
+      }
+
+      // set the synchronization date
+      const syncDate: string = '2020-11-25T08:30:25.000Z';
+      await db.setSyncDate(syncDate);
+
+      // add two users in db
+      ret = await db.execute(importTwoUsers);
+      if (ret.changes.changes !== 2) {
+        errMess.current = `Execute importTwoUsers changes != 2`;
+        setOutput(() => ({ log: myLog }));
+        return false;
+      }
+
+      // select all users in db
+      ret = await db.query('SELECT * FROM users;');
+
+      if (
+        ret.values.length !== 2 ||
+        ret.values[0].name !== 'Whiteley' ||
+        ret.values[1].name !== 'Jones'
+      ) {
+        errMess.current = `Query not returning 2 values`;
+        setOutput(() => ({ log: myLog }));
+        return false;
+      }
+
+      // open db testSet
+      await db1.open();
+      myLog.push("> open 'testSet' successful\n");
+      // create tables in db1
+      ret = await db1.execute(createSchemaContacts);
+      if (ret.changes.changes < 0) {
+        errMess.current = `Execute createSchemaContacts changes < 0`;
+        setOutput(() => ({ log: myLog }));
+        return false;
+      }
+      // load setContacts in db1
+      ret = await db1.executeSet(setContacts);
+      if (ret.changes.changes !== 5) {
+        errMess.current = `ExecuteSet setContacts changes != 5`;
+        setOutput(() => ({ log: myLog }));
+        return false;
+      }
+
+      // select users where company is NULL in db
+      ret = await db.query('SELECT * FROM users WHERE company IS NULL;');
+      if (
+        ret.values.length !== 2 ||
+        ret.values[0].name !== 'Whiteley' ||
+        ret.values[1].name !== 'Jones'
+      ) {
+        errMess.current = `Query Company is NULL not returning 2 values`;
+        setOutput(() => ({ log: myLog }));
+        return false;
+      }
+      // add one user with statement and values
+      let sqlcmd: string = 'INSERT INTO users (name,email,age) VALUES (?,?,?)';
+      let values: Array<any> = ['Simpson', 'Simpson@example.com', 69];
+      ret = await db.run(sqlcmd, values);
+      if (ret.changes.lastId !== 3) {
+        errMess.current = `Run lastId != 3`;
+        setOutput(() => ({ log: myLog }));
+        return false;
+      }
+      // add one user with statement
+      sqlcmd =
+        `INSERT INTO users (name,email,age) VALUES ` +
+        `("Brown","Brown@example.com",15)`;
+      ret = await db.run(sqlcmd);
+      if (ret.changes.lastId !== 4) {
+        errMess.current = `Run lastId != 4`;
+        setOutput(() => ({ log: myLog }));
+        return false;
+      }
+      if (platform === 'web') {
+        await sqlite.saveToStore('testNew');
+        await sqlite.saveToStore('testSet');
+      }
+      myLog.push('* Ending testTwoDBS *\n');
+      existingConn.setExistConn(true);
+      return true;
+    } catch (err: any) {
+      errMess.current = `${err.message}`;
+      return false;
+    }
+  };
+
+  useEffect(() => {
+    if (sqlite.isAvailable) {
+      if (myRef.current === false) {
+        myRef.current = true;
+
+        testtwodbs().then(async res => {
+          if (res) {
+            myLog.push('\n* The set of tests was successful *\n');
+          } else {
+            myLog.push('\n* The set of tests failed *\n');
+            await showAlert(errMess.current);
+          }
+          setOutput(() => ({ log: myLog }));
+        });
+      }
+    } else {
+      sqlite.getPlatform().then(async (ret: { platform: string }) => {
+        myLog.push('\n* Not available for ' + ret.platform + ' platform *\n');
+        await showAlert(errMess.current);
+        setOutput(() => ({ log: myLog }));
+      });
+    }
+  });
+
+  return (
+    <TestOutput dataLog={output.log} errMess={errMess.current}></TestOutput>
+  );
+};
+
+export default Test2dbs;
+```
+
 Where
 
 - `../Utils/noEncryptionUtils`
@@ -568,20 +590,20 @@ export const setContacts: Array<capSQLiteSet> = [
 import { SQLiteDBConnection } from '@asello/capacitor-sqlite';
 
 export async function deleteDatabase(db: SQLiteDBConnection): Promise<void> {
-    try {
-      let ret: any = await db.isExists();
-      if(ret.result) {
-        const dbName = db.getConnectionDBName();
-        console.log("$$$ database " + dbName + " before delete");
-        await db.delete();
-        console.log("$$$ database " + dbName + " after delete " + ret.result);
-        return Promise.resolve();
-      } else {
-        return Promise.resolve();
-      }
-    } catch (err) {
-      return Promise.reject(err);
+  try {
+    let ret: any = await db.isExists();
+    if (ret.result) {
+      const dbName = db.getConnectionDBName();
+      console.log('$$$ database ' + dbName + ' before delete');
+      await db.delete();
+      console.log('$$$ database ' + dbName + ' after delete ' + ret.result);
+      return Promise.resolve();
+    } else {
+      return Promise.resolve();
     }
+  } catch (err) {
+    return Promise.reject(err);
+  }
 }
 ```
 
@@ -593,52 +615,53 @@ import './ModalJsonMessages.css';
 import Modal, { Styles } from 'react-modal';
 
 interface ModalProps {
-    message: string;
-    close: any;
+  message: string;
+  close: any;
 }
-  
-const ModalJsonMessages: React.FC<ModalProps> = (props) => {
-    const [modalIsOpen,setModalIsOpen] = useState(true);
 
-    const setModalIsOpenToFalse = () => {
-        setModalIsOpen(false);
-        props.close();
-    }
-    const customStyles: Styles = {
-        content : {
-          top                   : '10%',
-          left                  : '2%',
-          right                 : '2%',
-          bottom                : '10%',
-          backgroundColor       : '#D3D3D3',
-          borderRadius          : '25px' ,
-          whiteSpace            : 'pre-wrap',
-          overflowWrap          : 'break-word' ,
-          wordWrap              : 'break-word',
-          hyphens               : 'auto',
-        }
-    };
-    return (
-        <Modal isOpen={modalIsOpen} style={customStyles} ariaHideApp={false}>
-            <button className="button" onClick={setModalIsOpenToFalse}>Close</button>
-            <pre>
-                <p className="message">{props.message}</p>
-            </pre>
-        </Modal>
-    );
+const ModalJsonMessages: React.FC<ModalProps> = props => {
+  const [modalIsOpen, setModalIsOpen] = useState(true);
 
+  const setModalIsOpenToFalse = () => {
+    setModalIsOpen(false);
+    props.close();
+  };
+  const customStyles: Styles = {
+    content: {
+      top: '10%',
+      left: '2%',
+      right: '2%',
+      bottom: '10%',
+      backgroundColor: '#D3D3D3',
+      borderRadius: '25px',
+      whiteSpace: 'pre-wrap',
+      overflowWrap: 'break-word',
+      wordWrap: 'break-word',
+      hyphens: 'auto',
+    },
+  };
+  return (
+    <Modal isOpen={modalIsOpen} style={customStyles} ariaHideApp={false}>
+      <button className="button" onClick={setModalIsOpenToFalse}>
+        Close
+      </button>
+      <pre>
+        <p className="message">{props.message}</p>
+      </pre>
+    </Modal>
+  );
 };
 export default ModalJsonMessages;
+```
+
+- `ModalJsonMessages.css`
 
 ```
- - `ModalJsonMessages.css`
-
- ```
- .button {
-    font-size: 16px;
-    font-weight: bold;
+.button {
+   font-size: 16px;
+   font-weight: bold;
 }
 .message {
-    font-size: 14px;
+   font-size: 14px;
 }
- ```
+```

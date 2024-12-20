@@ -224,18 +224,17 @@ Check the passphrase stored in a secure store
 ### addUpgradeStatement(...)
 
 ```typescript
-addUpgradeStatement(database: string, toVersion: number, statements: string[]) => Promise<void>
+addUpgradeStatement(database: string, upgrade: capSQLiteVersionUpgrade[]) => Promise<void>
 ```
 
 Add the upgrade Statement for database version upgrading
 
-| Param            | Type                  |
-| ---------------- | --------------------- |
-| **`database`**   | <code>string</code>   |
-| **`toVersion`**  | <code>number</code>   |
-| **`statements`** | <code>string[]</code> |
+| Param          | Type                                   |
+| -------------- | -------------------------------------- |
+| **`database`** | <code>string</code>                    |
+| **`upgrade`**  | <code>capSQLiteVersionUpgrade[]</code> |
 
-**Since:** 2.9.0 refactor
+**Since:** 5.6.4
 
 --------------------
 
@@ -637,7 +636,7 @@ Get the database list
 ### getMigratableDbList(...)
 
 ```typescript
-getMigratableDbList(folderPath: string) => Promise<capSQLiteValues>
+getMigratableDbList(folderPath?: string | undefined) => Promise<capSQLiteValues>
 ```
 
 Get the Migratable database list
@@ -721,6 +720,14 @@ This resembles calling addSQLiteSuffix and deleteOldDatabases, but it is more pe
 | Prop         | Type                 | Description                                   |
 | ------------ | -------------------- | --------------------------------------------- |
 | **`result`** | <code>boolean</code> | result set to true when successful else false |
+
+
+#### capSQLiteVersionUpgrade
+
+| Prop             | Type                  |
+| ---------------- | --------------------- |
+| **`toVersion`**  | <code>number</code>   |
+| **`statements`** | <code>string[]</code> |
 
 
 #### Map

@@ -247,7 +247,7 @@ enum CapacitorSQLiteError: Error {
 
     // MARK: - CheckEncryptionSecret
 
-    @objc public func checkEncryptionSecret(passphrase: String) throws ->  NSNumber {
+    @objc public func checkEncryptionSecret(passphrase: String) throws -> NSNumber {
         guard isInit else {
             throw CapacitorSQLiteError.failed(message: initMessage)
         }
@@ -557,7 +557,7 @@ enum CapacitorSQLiteError: Error {
     // MARK: - GetVersion
 
     @objc public func getVersion(_ dbName: String, readonly: Bool)
-    throws ->  NSNumber {
+    throws -> NSNumber {
         guard isInit else {
             throw CapacitorSQLiteError.failed(message: initMessage)
         }
@@ -585,16 +585,13 @@ enum CapacitorSQLiteError: Error {
         UtilsDownloadFromHTTP.download(databaseLocation: databaseLocation,
                                        url: url) { ( result) in
             switch result {
-            case .success(_):
+            case .success:
                 self.retHandler.rResult(call: call)
                 return
             case .failure(let error):
-
-                if error == .downloadFromHTTPFailed {
-                    let msg = "Download from HTTP failed"
-                    self.retHandler.rResult(call: call, message: msg)
-                    return
-                }
+                let msg = "Download from HTTP failed: \(error.localizedDescription)"
+                self.retHandler.rResult(call: call, message: msg)
+                return
 
             }
 
@@ -627,7 +624,7 @@ enum CapacitorSQLiteError: Error {
 
     @objc public func checkConnectionsConsistency(_ dbNames: [String],
                                                   openModes: [String])
-    throws ->  NSNumber {
+    throws -> NSNumber {
         guard isInit else {
             throw CapacitorSQLiteError.failed(message: initMessage)
         }
@@ -1012,8 +1009,8 @@ enum CapacitorSQLiteError: Error {
 
     // MARK: - deleteDatabase
 
-    // swiftlint:disable function_body_length
     // swiftlint:disable cyclomatic_complexity
+    // swiftlint:disable function_body_length
     @objc func deleteDatabase(_ dbName: String, readonly: Bool) throws {
         guard isInit else {
             throw CapacitorSQLiteError.failed(message: initMessage)
@@ -1031,9 +1028,12 @@ enum CapacitorSQLiteError: Error {
         do {
             if !mDb.isDBOpen() {
                 // check the state of the DB
-                let state: State = UtilsSQLCipher.getDatabaseState(databaseLocation: databaseLocation, databaseName: "\(mDbName)SQLite.db", account: account)
-                if !isEncryption &&  (state.rawValue == "ENCRYPTEDGLOBALSECRET" ||
-                                        state.rawValue == "ENCRYPTEDSECRET") {
+                let state: State = UtilsSQLCipher.getDatabaseState(databaseLocation: databaseLocation,
+                                                                   databaseName: "\(mDbName)SQLite.db",
+                                                                   account: account)
+                if !isEncryption &&
+                    (state.rawValue == "ENCRYPTEDGLOBALSECRET" ||
+                        state.rawValue == "ENCRYPTEDSECRET") {
                     var msg = "Cannot delete an Encrypted database with "
                     msg += "No Encryption set in capacitor.config"
                     throw CapacitorSQLiteError.failed(message: msg)
@@ -1066,8 +1066,8 @@ enum CapacitorSQLiteError: Error {
             throw CapacitorSQLiteError.failed(message: msg)
         }
     }
-    // swiftlint:enable cyclomatic_complexity
     // swiftlint:enable function_body_length
+    // swiftlint:enable cyclomatic_complexity
 
     // MARK: - isJsonValid
 
@@ -1547,7 +1547,10 @@ enum CapacitorSQLiteError: Error {
             let aPath: String = try (UtilsFile.getFolderURL(folderPath: databaseLocation)).path
             // get the database files
             let dbList: [String] = try UtilsFile.getFileList(path: aPath, ext: ".db")
-            return dbList
+            // filter for db including SQLite
+            let dbWithSQLite = dbList.filter({ $0.contains("SQLite") })
+
+            return dbWithSQLite
 
         } catch let error {
             let msg: String = "\(error)"
@@ -1564,7 +1567,10 @@ enum CapacitorSQLiteError: Error {
         do {
             let dbList: [String] = try UtilsMigrate
                 .getMigratableList(folderPath: folderPath)
-            return dbList
+            // filter for db not including SQLite
+            let dbNoSQLite = dbList.filter({ !$0.contains("SQLite") })
+
+            return dbNoSQLite
 
         } catch UtilsMigrateError.getMigratableList(let message) {
             var msg: String = "getMigratableList:"

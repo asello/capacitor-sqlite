@@ -12,7 +12,9 @@ import com.getcapacitor.community.database.sqlite.SQLite.UtilsSQLite;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 public class ImportFromJson {
 
@@ -234,11 +236,11 @@ public class ImportFromJson {
                 .append(" AFTER UPDATE ON ")
                 .append(tableName)
                 .append(" FOR EACH ROW ")
-                .append("WHEN NEW.last_modified < " + "OLD.last_modified BEGIN ")
+                .append("WHEN NEW.last_modified <= " + "OLD.last_modified BEGIN ")
                 .append("UPDATE ")
                 .append(tableName)
                 .append(" SET last_modified = (strftime('%s','now')) ")
-                .append("WHERE id=OLD.id; ")
+                .append("WHERE id=NEW.id; ")
                 .append("END;")
                 .toString();
             statements.add(stmtTrigger);
@@ -374,31 +376,63 @@ public class ImportFromJson {
         if (!isTable) {
             throw new Exception("createTableData: Table " + tableName + "does not exist");
         }
-        // Get the Column's Name and Type
+        // Get the Column's Name and Types
         try {
             JSObject tableNamesTypes = _uJson.getTableColumnNamesTypes(mDb, tableName);
             if (tableNamesTypes.length() == 0) {
                 throw new Exception("CreateTableData: no column names & types returned");
             }
-            ArrayList<String> tColNames = new ArrayList<>();
-            ArrayList<String> tColTypes = new ArrayList<>();
+            ArrayList<String> tColNames;
             if (tableNamesTypes.has("names")) {
                 tColNames = _uJson.getColumnNames(tableNamesTypes.get("names"));
             } else {
                 throw new Exception("GetValues: Table " + tableName + " no names");
             }
+            ArrayList<String> tColTypes;
             if (tableNamesTypes.has("types")) {
                 tColTypes = _uJson.getColumnNames(tableNamesTypes.get("types"));
             } else {
                 throw new Exception("GetValues: Table " + tableName + " no types");
             }
+            if (isBlob(tColTypes)) {
+                // Old process flow
+                oldProcessFow(mDb, values, tableName, tColNames, tColTypes, mode);
+            } else {
+                // New process flow
+                newProcessFlow(mDb, values, tableName, tColNames);
+            }
+        } catch (JSONException e) {
+            throw new Exception("CreateTableData: " + e.getMessage());
+        } catch (Exception e) {
+            throw new Exception("CreateTableData: " + e.getMessage());
+        }
+    }
 
-            // Loop on Table's Values
+    /**
+     * Use the old process flow for INSERT, UPDATE and DELETE
+     * One by one row values
+     * @param mDb
+     * @param values
+     * @param tableName
+     * @param tColNames
+     * @param tColTypes
+     * @param mode
+     * @throws Exception
+     */
+    private void oldProcessFow(
+        Database mDb,
+        ArrayList<ArrayList<Object>> values,
+        String tableName,
+        ArrayList<String> tColNames,
+        ArrayList<String> tColTypes,
+        String mode
+    ) throws Exception {
+        try {
+            // Loop on table's value
             for (int j = 0; j < values.size(); j++) {
                 // Check the row number of columns
-                ArrayList<Object> row = values.get(j);
-                // Check row validity remove to accept RDBMS types
-                //                _uJson.checkRowValidity(mDb, tColNames, tColTypes, row, j, tableName);
+                ArrayList<Object> row = createRowValues(values.get(j));
+                //
                 // Create INSERT or UPDATE Statements
                 Boolean isRun = true;
                 String stmt = createRowStatement(mDb, tColNames, tColTypes, row, j, tableName, mode);
@@ -415,94 +449,106 @@ public class ImportFromJson {
                     }
                 }
             }
-            return;
         } catch (JSONException e) {
-            throw new Exception("CreateTableData: " + e.getMessage());
+            throw new Exception("oldProcessFlow: " + e.getMessage());
         } catch (Exception e) {
-            throw new Exception("CreateTableData: " + e.getMessage());
+            throw new Exception("oldProcessFlow: " + e.getMessage());
         }
     }
 
+    private ArrayList<Object> createRowValues(ArrayList<Object> row) throws Exception {
+        try {
+            // Iterate over the ArrayList and check for JSONArray objects
+            for (int i = 0; i < row.size(); i++) {
+                Object obj = row.get(i);
+                if (obj instanceof JSONArray) {
+                    JSONArray jsonArrayObj = (JSONArray) obj;
+                    byte[] byteArray = jsonArrayToByteArray(jsonArrayObj);
+                    // Replace the JSONArray object with the corresponding byte[] in the ArrayList
+                    row.set(i, byteArray);
+                }
+            }
+            return row;
+        } catch (JSONException e) {
+            throw new Exception("createRowValues: " + e.getMessage());
+        } catch (Exception e) {
+            throw new Exception("createRowValues: " + e.getMessage());
+        }
+    }
+
+    private byte[] jsonArrayToByteArray(JSONArray jsonArray) throws JSONException {
+        byte[] byteArray = new byte[jsonArray.length()];
+        for (int i = 0; i < jsonArray.length(); i++) {
+            byteArray[i] = (byte) jsonArray.getInt(i);
+        }
+        return byteArray;
+    }
+
     /**
-     * Check when UPDATE if the values are updated
+     * Use the new process flow for INSERT, UPDATE and DELETE
      * @param mDb
-     * @param stmt
      * @param values
      * @param tableName
      * @param tColNames
-     * @param tColTypes
-     * @return
      * @throws Exception
      */
-    private Boolean checkUpdate(
-        Database mDb,
-        String stmt,
-        ArrayList<Object> values,
-        String tableName,
-        ArrayList<String> tColNames,
-        ArrayList<String> tColTypes
-    ) throws Exception {
-        Boolean isRun = true;
-        if (stmt.substring(0, 6).equals("UPDATE")) {
-            StringBuilder sbQuery = new StringBuilder("SELECT * FROM ").append(tableName).append(" WHERE ").append(tColNames.get(0));
-
-            if (values.get(0) instanceof String) {
-                sbQuery.append(" = '").append(values.get(0)).append("';");
-            } else {
-                sbQuery.append(" = ").append(values.get(0)).append(";");
-            }
-            String query = sbQuery.toString();
-
-            try {
-                ArrayList<ArrayList<Object>> resValues = _uJson.getValues(mDb, query, tableName);
-                if (resValues.size() > 0) {
-                    isRun = checkValues(values, resValues.get(0));
-                } else {
-                    throw new Exception("CheckUpdate: CheckUpdate statement returns nothing");
+    private void newProcessFlow(Database mDb, ArrayList<ArrayList<Object>> values, String tableName, ArrayList<String> tColNames)
+        throws Exception {
+        try {
+            JSONObject retObjStrs = generateInsertAndDeletedStrings(tColNames, values);
+            // Create the statement for INSERT
+            String namesString = _uJson.convertToString(tColNames, ',');
+            if (retObjStrs.has("insert")) {
+                String stmtInsert = new StringBuilder("INSERT OR REPLACE INTO ")
+                    .append(tableName)
+                    .append("(")
+                    .append(namesString)
+                    .append(") ")
+                    .append(retObjStrs.get("insert"))
+                    .append(";")
+                    .toString();
+                JSObject retObj = mDb.prepareSQL(stmtInsert, new ArrayList<>(), true, "no");
+                long lastId = retObj.getLong("lastId");
+                if (lastId < 0) {
+                    throw new Exception("CreateTableData: INSERT lastId < 0");
                 }
-            } catch (Exception e) {
-                throw new Exception("CheckUpdate: " + e.getMessage());
             }
+            if (retObjStrs.has("delete")) {
+                String stmtDelete = new StringBuilder("DELETE FROM ")
+                    .append(tableName)
+                    .append(" WHERE ")
+                    .append(tColNames.get(0))
+                    .append(" ")
+                    .append(retObjStrs.get("delete"))
+                    .append(";")
+                    .toString();
+                JSObject retObj = mDb.prepareSQL(stmtDelete, new ArrayList<>(), true, "no");
+                long lastId = retObj.getLong("lastId");
+                if (lastId < 0) {
+                    throw new Exception("newProcessFlow: INSERT lastId < 0");
+                }
+            }
+        } catch (JSONException e) {
+            throw new Exception("newProcessFlow: " + e.getMessage());
+        } catch (Exception e) {
+            throw new Exception("newProcessFlow: " + e.getMessage());
         }
-        return isRun;
     }
 
     /**
-     * Check Values
-     * @param values
-     * @param nValues
+     * Check if there is a BLOB types
+     * @param tColTypes
      * @return
-     * @throws Exception
      */
-    private Boolean checkValues(ArrayList<Object> values, ArrayList<Object> nValues) throws Exception {
-        if (values.size() > 0 && nValues.size() > 0 && values.size() == nValues.size()) {
-            for (int i = 0; i < values.size(); i++) {
-                if (nValues.get(i) instanceof String) {
-                    if (!values.get(i).equals(nValues.get(i))) {
-                        return true;
-                    }
-                } else if (nValues.get(i) instanceof Long && values.get(i) instanceof Integer) {
-                    //            int iVal = (Integer) values.get(i);
-                    long lVal = (Integer) values.get(i);
-                    //            long nlVal = (Long) nValues.get(i);
-                    if (lVal != (Long) nValues.get(i)) {
-                        return true;
-                    }
-                } else if (nValues.get(i) instanceof Double && values.get(i) instanceof Integer) {
-                    double dVal = (Integer) values.get(i);
-                    if (dVal != (Double) nValues.get(i)) {
-                        return true;
-                    }
-                } else {
-                    if (values.get(i) != nValues.get(i)) {
-                        return true;
-                    }
-                }
+    private Boolean isBlob(ArrayList<String> tColTypes) {
+        boolean containsBlob = false;
+        for (String str : tColTypes) {
+            if (str.equalsIgnoreCase("BLOB")) {
+                containsBlob = true;
+                break;
             }
-            return false;
-        } else {
-            throw new Exception("CheckValues: Both arrays not the same length");
         }
+        return containsBlob;
     }
 
     /**
@@ -591,6 +637,176 @@ public class ImportFromJson {
             }
         }
         return stmt;
+    }
+
+    /**
+     * Check when UPDATE if the values are updated
+     * @param mDb
+     * @param stmt
+     * @param values
+     * @param tableName
+     * @param tColNames
+     * @param tColTypes
+     * @return
+     * @throws Exception
+     */
+    private Boolean checkUpdate(
+        Database mDb,
+        String stmt,
+        ArrayList<Object> values,
+        String tableName,
+        ArrayList<String> tColNames,
+        ArrayList<String> tColTypes
+    ) throws Exception {
+        Boolean isRun = true;
+        if (stmt.substring(0, 6).equals("UPDATE")) {
+            StringBuilder sbQuery = new StringBuilder("SELECT * FROM ").append(tableName).append(" WHERE ").append(tColNames.get(0));
+
+            if (values.get(0) instanceof String) {
+                sbQuery.append(" = '").append(values.get(0)).append("';");
+            } else {
+                sbQuery.append(" = ").append(values.get(0)).append(";");
+            }
+            String query = sbQuery.toString();
+
+            try {
+                ArrayList<ArrayList<Object>> resValues = _uJson.getValues(mDb, query, tableName);
+                if (resValues.size() > 0) {
+                    isRun = checkValues(values, resValues.get(0));
+                } else {
+                    throw new Exception("CheckUpdate: CheckUpdate statement returns nothing");
+                }
+            } catch (Exception e) {
+                throw new Exception("CheckUpdate: " + e.getMessage());
+            }
+        }
+        return isRun;
+    }
+
+    /**
+     * Check Values
+     * @param values
+     * @param nValues
+     * @return
+     * @throws Exception
+     */
+    private Boolean checkValues(ArrayList<Object> values, ArrayList<Object> nValues) throws Exception {
+        if (values.size() > 0 && nValues.size() > 0 && values.size() == nValues.size()) {
+            for (int i = 0; i < values.size(); i++) {
+                if (nValues.get(i) instanceof String) {
+                    if (!values.get(i).equals(nValues.get(i))) {
+                        return true;
+                    }
+                } else if (nValues.get(i) instanceof Long && values.get(i) instanceof Integer) {
+                    //            int iVal = (Integer) values.get(i);
+                    long lVal = (Integer) values.get(i);
+                    //            long nlVal = (Long) nValues.get(i);
+                    if (lVal != (Long) nValues.get(i)) {
+                        return true;
+                    }
+                } else if (nValues.get(i) instanceof Double && values.get(i) instanceof Integer) {
+                    double dVal = (Integer) values.get(i);
+                    if (dVal != (Double) nValues.get(i)) {
+                        return true;
+                    }
+                } else {
+                    if (values.get(i) != nValues.get(i)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        } else {
+            throw new Exception("CheckValues: Both arrays not the same length");
+        }
+    }
+
+    /**
+     * GenerateInsertAndDeletedStrings
+     * @param tColNames
+     * @param values
+     * @return
+     * @throws JSONException
+     */
+    private JSONObject generateInsertAndDeletedStrings(ArrayList<String> tColNames, ArrayList<ArrayList<Object>> values)
+        throws JSONException {
+        JSONObject retObj = new JSONObject();
+        StringBuilder insertValues = new StringBuilder();
+        StringBuilder deletedIds = new StringBuilder();
+
+        for (ArrayList<Object> rowIndex : values) {
+            int colIndex = tColNames.indexOf("sql_deleted");
+
+            // Check if the column "sql_deleted" is 0
+            if (colIndex == -1 || (int) rowIndex.get(colIndex) == 0) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    String formattedRow = null;
+                    formattedRow =
+                        String.join(
+                            ", ",
+                            rowIndex
+                                .stream()
+                                .map(item -> {
+                                    if (item instanceof String) {
+                                        String val = (String) item;
+                                        String rVal = val;
+                                        if (val.contains("'")) {
+                                            rVal = val.replace("'", "''");
+                                        }
+                                        return "'" + rVal + "'";
+                                    } else {
+                                        return item.toString();
+                                    }
+                                })
+                                .toArray(String[]::new)
+                        );
+                    insertValues.append("(").append(formattedRow).append("), ");
+                } else {
+                    StringBuilder formattedRow = new StringBuilder();
+                    for (int i = 0; i < rowIndex.size(); i++) {
+                        if (i > 0) {
+                            formattedRow.append(", ");
+                        }
+                        Object item = rowIndex.get(i);
+                        if (item instanceof String) {
+                            String val = (String) item;
+                            String rVal = val;
+                            if (val.contains("'")) {
+                                rVal = val.replace("'", "''");
+                            }
+                            formattedRow.append("'").append(rVal).append("'");
+                        } else {
+                            formattedRow.append(item);
+                        }
+                    }
+                    insertValues.append("(").append(formattedRow).append("), ");
+                }
+            } else if ((int) rowIndex.get(colIndex) == 1) {
+                if (rowIndex.get(0) instanceof String) {
+                    deletedIds.append("'").append(rowIndex.get(0)).append("', ");
+                } else {
+                    deletedIds.append(rowIndex.get(0)).append(", ");
+                }
+            }
+        }
+
+        // Remove the trailing comma and space from insertValues and deletedIds
+        if (insertValues.length() > 0) {
+            insertValues.setLength(insertValues.length() - 2); // Remove trailing comma and space
+            insertValues.insert(0, "VALUES ");
+        }
+        if (deletedIds.length() > 0) {
+            deletedIds.setLength(deletedIds.length() - 2); // Remove trailing comma and space
+            deletedIds.insert(0, "IN (");
+            deletedIds.append(")");
+        }
+        if (insertValues.length() > 0) {
+            retObj.put("insert", insertValues.toString());
+        }
+        if (deletedIds.length() > 0) {
+            retObj.put("delete", deletedIds.toString());
+        }
+        return retObj;
     }
 
     /**

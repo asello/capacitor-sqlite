@@ -1,7 +1,7 @@
 export class UtilsSQL92Compatibility {
   public compatibleSQL92(statement: string): string {
     let newStatement = '';
-    const action = statement.trim().substring(0, 6).toUpperCase();
+    const action = statement.trim().split(' ')[0].toUpperCase();
     switch (action) {
       case 'INSERT':
         newStatement = this.insertSQL92(statement);
@@ -60,7 +60,7 @@ export class UtilsSQL92Compatibility {
     for (let i = 1; i < setWhereSplit.length; i++) {
       const wherePart = setWhereSplit[1].trim();
       const modifiedWherePart = this.modWherePart(wherePart);
-      modifiedStatement += `WHERE ${modifiedWherePart}`;
+      modifiedStatement += ` WHERE ${modifiedWherePart}`;
     }
     return modifiedStatement;
   }
@@ -97,8 +97,8 @@ export class UtilsSQL92Compatibility {
     const newTokens: string[] = [];
     const tokens = whereStatement
       .split(/(\s|,|\(|\))/)
-      .filter(item => item !== ' ')
-      .filter(item => item !== '');
+      .filter((item) => item !== ' ')
+      .filter((item) => item !== '');
     let inClause = false;
     let inValues = false;
     let modValue = false;
@@ -124,11 +124,7 @@ export class UtilsSQL92Compatibility {
         newTokens.push(token);
         opsClause = false;
         modValue = true;
-      } else if (
-        token.toUpperCase() === 'AND' ||
-        token.toUpperCase() === 'OR' ||
-        token.toUpperCase() === 'NOT'
-      ) {
+      } else if (token.toUpperCase() === 'AND' || token.toUpperCase() === 'OR' || token.toUpperCase() === 'NOT') {
         newTokens.push(token);
         opsClause = true;
       } else if (token.toUpperCase() === 'IN') {

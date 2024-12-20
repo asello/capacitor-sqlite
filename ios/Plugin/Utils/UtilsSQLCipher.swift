@@ -447,7 +447,7 @@ class UtilsSQLCipher {
             msg.append("Database not opened")
             throw UtilsSQLCipherError.prepareSQL(message: msg)
         }
-        let systemVersion = UIDevice.current.systemVersion
+        //        let systemVersion = UIDevice.current.systemVersion
         var runSQLStatement: OpaquePointer?
         var message: String = ""
         var lastId: Int64 = -1
@@ -455,6 +455,11 @@ class UtilsSQLCipher {
         var names: String = ""
         var result: [[String: Any]] = []
         var retMode: String
+        let stmtType = sqlStmt
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .components(separatedBy: " ")
+            .first?.capitalized ?? ""
+
         if #available(iOS 15, *) {
             retMode = returnMode
         } else {
@@ -463,9 +468,7 @@ class UtilsSQLCipher {
                 retMode = "wA\(retMode)"
             }
         }
-
-        if (retMode == "no" || retMode.prefix(2) == "wA") &&
-            sqlStmt.uppercased().contains("RETURNING") {
+        if retMode == "no" || retMode.prefix(2) == "wA" {
             let stmtNames = UtilsSQLStatement
                 .getStmtAndRetColNames(sqlStmt: sqlStmt,
                                        retMode: retMode)
@@ -473,7 +476,7 @@ class UtilsSQLCipher {
             names = stmtNames["names"] ?? ""
         }
         // Check for DELETE statement
-        if !fromJson && sqlStmt.prefix(6).uppercased() == "DELETE" {
+        if !fromJson && stmtType == "DELETE" {
             do {
                 sqlStmt = try deleteSQL(mDB: mDB, sql: sqlStmt,
                                         values: values)
@@ -566,7 +569,12 @@ class UtilsSQLCipher {
     throws -> [[String: Any]] {
         var result: [[String: Any]] = []
         let initLastId = Int64(sqlite3_last_insert_rowid(mDB.mDb))
-        if sqlStmt.prefix(6).uppercased() == "DELETE" &&
+        let stmtType = sqlStmt
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .components(separatedBy: " ")
+            .first?.capitalized ?? ""
+
+        if stmtType == "DELETE" &&
             names.count > 0 {
             do {
                 result = try UtilsDelete
@@ -589,7 +597,7 @@ class UtilsSQLCipher {
             .returningWorkAround(message: message)
 
         }
-        if sqlStmt.prefix(6).uppercased() == "INSERT" {
+        if stmtType == "INSERT" {
             let lastId = Int64(sqlite3_last_insert_rowid(mDB.mDb))
             let tableName = UtilsSQLStatement
                 .extractTableName(from: sqlStmt)
@@ -611,7 +619,7 @@ class UtilsSQLCipher {
 
             }
 
-        } else if sqlStmt.prefix(6).uppercased() == "UPDATE" {
+        } else if stmtType == "UPDATE" {
             do {
                 result = try UtilsDelete
                     .getUpdDelReturnedValues(mDB: mDB,
@@ -836,6 +844,12 @@ class UtilsSQLCipher {
         return Int(sqlite3_total_changes(mDB))
     }
 
+    // MARK: - dbLastId
+
+    class func dbLastId(mDB: OpaquePointer?) -> Int64 {
+        return Int64(sqlite3_last_insert_rowid(mDB))
+    }
+
     // MARK: - Execute
 
     // swiftlint:disable function_body_length
@@ -1001,12 +1015,12 @@ class UtilsSQLCipher {
         var mRespSet = respSet
         if !retResponse.isEmpty {
             let keysInArray1 = ["ios_columns"]
-            mRespSet = mRespSet.filter { dict2 in
+            mRespSet = mRespSet.filter({ dict2 in
                 guard let dict2Key = dict2.keys.first else {
                     return true // Keep dictionaries without any keys
                 }
                 return !keysInArray1.contains(dict2Key)
-            }
+            })
         }
         retResponse.append(contentsOf: mRespSet)
 

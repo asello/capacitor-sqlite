@@ -191,7 +191,7 @@ class UtilsJson {
 
     class func checkColumnTypes (
         mDB: Database, types: [String],
-        values: [UncertainValue<String, Int, Double>]) -> Bool {
+        values: [UncertainValue<String, Int, Double, [UInt8]>]) -> Bool {
         var isRetType: Bool = true
         for ipos in 0..<values.count {
             isRetType = UtilsJson.isType(
@@ -204,7 +204,7 @@ class UtilsJson {
     // MARK: - ImportFromJson - IsType
 
     class func isType(stype: String,
-                      avalue: UncertainValue<String, Int, Double>)
+                      avalue: UncertainValue<String, Int, Double, [UInt8]>)
     -> Bool {
         var ret: Bool = false
         // swiftlint:disable force_unwrapping
@@ -266,7 +266,7 @@ class UtilsJson {
     // MARK: - ImportFromJson - GetValuesFromRow
 
     class func getValuesFromRow(
-        rowValues: [ UncertainValue<String, Int, Double>]) -> [Any] {
+        rowValues: [ UncertainValue<String, Int, Double, [UInt8]>]) -> [Any] {
         var retArray: [Any] = []
         for ipos in 0..<rowValues.count {
             let value = rowValues[ipos].value
@@ -354,7 +354,7 @@ class UtilsJson {
 
     class func checkRowValidity(
         mDB: Database, jsonNamesTypes: JsonNamesTypes,
-        row: [UncertainValue<String, Int, Double>], pos: Int,
+        row: [UncertainValue<String, Int, Double, [UInt8]>], pos: Int,
         tableName: String) throws {
         if jsonNamesTypes.names.count != row.count {
             let message: String = """
@@ -569,9 +569,9 @@ class UtilsJson {
         let iterations: UInt32 = 10000
         var derivedKeyData = Data(count: keyLength)
         let derivedCount = derivedKeyData.count
-        let derivationStatus = derivedKeyData.withUnsafeMutableBytes { derivedKeyUnsafeMutableRawBufferPointer in
-            passphraseData.withUnsafeBytes { passphraseUnsafeRawBufferPointer in
-                salt.withUnsafeBytes { saltUnsafeRawBufferPointer in
+        let derivationStatus = derivedKeyData.withUnsafeMutableBytes({ derivedKeyUnsafeMutableRawBufferPointer in
+            passphraseData.withUnsafeBytes({ passphraseUnsafeRawBufferPointer in
+                salt.withUnsafeBytes({ saltUnsafeRawBufferPointer in
                     CCKeyDerivationPBKDF(
                         CCPBKDFAlgorithm(kCCPBKDF2),
                         passphraseUnsafeRawBufferPointer.baseAddress,
@@ -583,9 +583,9 @@ class UtilsJson {
                         derivedKeyUnsafeMutableRawBufferPointer.baseAddress,
                         derivedCount
                     )
-                }
-            }
-        }
+                })
+            })
+        })
         return derivationStatus == kCCSuccess ? derivedKeyData : nil
     }
 }

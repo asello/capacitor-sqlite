@@ -1,11 +1,4 @@
-import type {
-  JsonSQLite,
-  JsonTable,
-  JsonColumn,
-  JsonIndex,
-  JsonTrigger,
-  JsonView,
-} from '../../../../src/definitions';
+import type { JsonSQLite, JsonTable, JsonColumn, JsonIndex, JsonTrigger, JsonView } from '../../../../src/definitions';
 import { UtilsSQLite } from '../utilsSQLite';
 
 import { UtilsJson } from './utilsJson';
@@ -117,9 +110,7 @@ export class ExportToJson {
       if (!isTable) {
         throw new Error(`${msg} No sync_table available`);
       }
-      const sDate: number = Math.round(
-        new Date(lastExportedDate).getTime() / 1000,
-      );
+      const sDate: number = Math.round(new Date(lastExportedDate).getTime() / 1000);
       let stmt = '';
       if (this.getLastExportDate(mDb) > 0) {
         stmt = `UPDATE sync_table SET sync_date = ${sDate} WHERE id = 2;`;
@@ -163,13 +154,7 @@ export class ExportToJson {
         // define the delete statement
         const delStmt = `DELETE FROM ${table}
               WHERE sql_deleted = 1 AND last_modified < ${lastExportDate};`;
-        const results = this.sqliteUtil.prepareRun(
-          mDb,
-          delStmt,
-          [],
-          true,
-          'no',
-        );
+        const results = this.sqliteUtil.prepareRun(mDb, delStmt, [], true, 'no');
         if (results.lastId < 0) {
           throw new Error(`${msg} lastId < 0`);
         }
@@ -329,35 +314,47 @@ export class ExportToJson {
         row[1] = scht.substring(scht.indexOf(' ') + 1);
 
         const jsonRow: JsonColumn = {} as JsonColumn;
-        if (row[0].toUpperCase() === 'FOREIGN') {
-          const oPar: number = scht.indexOf('(');
-          const cPar: number = scht.indexOf(')');
-          const fk = scht.substring(oPar + 1, cPar);
-          const fknames: string[] = fk.split('§');
-          row[0] = fknames.join(',');
-          row[0] = row[0].replace(/, /g, ',');
-          row[1] = scht.substring(cPar + 2);
-          jsonRow['foreignkey'] = row[0];
-        } else if (row[0].toUpperCase() === 'PRIMARY') {
-          const oPar: number = scht.indexOf('(');
-          const cPar: number = scht.indexOf(')');
-          const pk: string = scht.substring(oPar + 1, cPar);
-          const pknames: string[] = pk.split('§');
-          row[0] = 'CPK_' + pknames.join('_');
-          row[0] = row[0].replace(/_ /g, '_');
-          row[1] = scht;
-          jsonRow['constraint'] = row[0];
-        } else if (row[0].toUpperCase() === 'CONSTRAINT') {
-          const tRow: string[] = [];
-          const row1t: string = row[1].trim();
-          tRow[0] = row1t.substring(0, row1t.indexOf(' '));
-          tRow[1] = row1t.substring(row1t.indexOf(' ') + 1);
-          row[0] = tRow[0];
-          jsonRow['constraint'] = row[0];
-          row[1] = tRow[1];
-        } else {
-          jsonRow['column'] = row[0];
+        switch (row[0].toUpperCase()) {
+          case 'FOREIGN': {
+            const oPar: number = scht.indexOf('(');
+            const cPar: number = scht.indexOf(')');
+            const fk = scht.substring(oPar + 1, cPar);
+            const fknames: string[] = fk.split('§');
+            row[0] = fknames.join(',');
+            row[0] = row[0].replace(/, /g, ',');
+            row[1] = scht.substring(cPar + 2);
+            jsonRow['foreignkey'] = row[0];
+            break;
+          }
+          case 'PRIMARY':
+          case 'UNIQUE': {
+            const prefix = row[0].toUpperCase() === 'PRIMARY' ? 'CPK_' : 'CUN_';
+            const oPar: number = scht.indexOf('(');
+            const cPar: number = scht.indexOf(')');
+            const pk: string = scht.substring(oPar + 1, cPar);
+            const pknames: string[] = pk.split('§');
+            row[0] = prefix + pknames.join('_');
+            row[0] = row[0].replace(/_ /g, '_');
+            row[1] = scht;
+            jsonRow['constraint'] = row[0];
+            break;
+          }
+          case 'CONSTRAINT': {
+            const tRow: string[] = [];
+            const row1t: string = row[1].trim();
+            tRow[0] = row1t.substring(0, row1t.indexOf(' '));
+            tRow[1] = row1t.substring(row1t.indexOf(' ') + 1);
+            row[0] = tRow[0];
+            jsonRow['constraint'] = row[0];
+            row[1] = tRow[1];
+            break;
+          }
+          default: {
+            jsonRow['column'] = row[0];
+            break;
+          }
         }
+
         jsonRow['value'] = row[1].replace(/§/g, ',');
         schema.push(jsonRow);
       }
@@ -438,30 +435,22 @@ export class ExportToJson {
               const name: string = rTrg['name'];
               let sqlArr: string[] = sql.split(name);
               if (sqlArr.length != 2) {
-                throw new Error(
-                  `${msg} sql split name does not return 2 values`,
-                );
+                throw new Error(`${msg} sql split name does not return 2 values`);
               }
               if (!sqlArr[1].includes(tableName)) {
-                throw new Error(
-                  `${msg} sql split does not contains ${tableName}`,
-                );
+                throw new Error(`${msg} sql split does not contains ${tableName}`);
               }
               const timeEvent = sqlArr[1].split(tableName, 1)[0].trim();
               sqlArr = sqlArr[1].split(timeEvent + ' ' + tableName);
               if (sqlArr.length != 2) {
-                throw new Error(
-                  `${msg} sql split tableName does not return 2 values`,
-                );
+                throw new Error(`${msg} sql split tableName does not return 2 values`);
               }
               let condition = '';
               let logic = '';
               if (sqlArr[1].trim().substring(0, 5).toUpperCase() !== 'BEGIN') {
                 sqlArr = sqlArr[1].trim().split('BEGIN');
                 if (sqlArr.length != 2) {
-                  throw new Error(
-                    `${msg} sql split BEGIN does not return 2 values`,
-                  );
+                  throw new Error(`${msg} sql split BEGIN does not return 2 values`);
                 }
                 condition = sqlArr[0].trim();
                 logic = 'BEGIN' + sqlArr[1];
@@ -526,11 +515,7 @@ export class ExportToJson {
           errmsg = `${msg} no sql`;
           break;
         }
-        if (
-          modTablesKeys.length == 0 ||
-          modTablesKeys.indexOf(tableName) === -1 ||
-          modTables[tableName] == 'No'
-        ) {
+        if (modTablesKeys.length == 0 || modTablesKeys.indexOf(tableName) === -1 || modTables[tableName] == 'No') {
           continue;
         }
         const table: JsonTable = {} as JsonTable;
@@ -563,9 +548,7 @@ export class ExportToJson {
         if (modTables[tableName] === 'Create') {
           query = `SELECT * FROM ${tableName};`;
         } else {
-          query =
-            `SELECT * FROM ${tableName} ` +
-            `WHERE last_modified > ${syncDate};`;
+          query = `SELECT * FROM ${tableName} ` + `WHERE last_modified > ${syncDate};`;
         }
         const values: any[] = this.jsonUtil.getValues(mDb, query, tableName);
 
@@ -702,9 +685,8 @@ export class ExportToJson {
     const tmpArr: string[] = [...str];
     char = char.toLowerCase();
     return tmpArr.reduce(
-      (results: number[], elem: string, idx: number) =>
-        elem.toLowerCase() === char ? [...results, idx] : results,
-      [],
+      (results: number[], elem: string, idx: number) => (elem.toLowerCase() === char ? [...results, idx] : results),
+      []
     );
   }
 }

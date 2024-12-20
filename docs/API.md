@@ -12,6 +12,18 @@ To easy the way to use the `@asello/capacitor-sqlite` plugin and its ability to 
 
 - [API_DB_Connection_Wrapper_Documentation](https://github.com/asello/capacitor-sqlite/blob/master/docs/APIDBConnection.md)
 
+## SQLite Commands Within the Plugin
+
+ - SQLite Data Definition Language commands (such as CREATE, ALTER, DROP) should be executed using the `execute` plugin method.
+
+ - SQLite Transaction Control commands (including BEGIN TRANSACTION, COMMIT, ROLLBACK) should also be executed using the `execute` plugin method.
+
+ - SQLite Data Manipulation Language commands (like INSERT, UPDATE, DELETE, REPLACE) should use the `run` plugin method if they involve bind values. They can utilize either the `execute` or `run` plugin methods if no bind values are involved.
+
+ - SQLite Data Query Language commands (SELECT) should be executed using the `query` plugin method.
+
+ - SQLite Special commands (PRAGMA) should be executed using the `execute` plugin method.
+ 
 ## Databases Location
 
 The plugin add a suffix "SQLite" and an extension ".db" to the database name given as options in the `capConnectionOptions` or `capSQLiteOptions` ie (fooDB -> fooDBSQLite.db). If the name given contains the extension `.db` it will be removed ie (foo.db) will become internally (fooSQLite.db) after adding the suffix. 
@@ -47,7 +59,7 @@ The plugin add a suffix "SQLite" and an extension ".db" to the database name giv
 
   - for sharing databases between users:
 
-    ``` 
+    ```ts 
     plugins: {
       CapacitorSQLite: {
         electronMacLocation: "/YOUR_DATABASES_PATH",
@@ -71,21 +83,7 @@ The plugin add a suffix "SQLite" and an extension ".db" to the database name giv
     You can replace "Databases" by your "YOUR_DATABASES_LOCATION", but it MUST not have any "/" or "\\" characters.
 
   For existing databases, YOU MUST COPY old databases to the new location
-  You MUST remove the Electron folder and add it again with: 
-
-  ``` 
-  npx cap add @capacitor-community/electron
-  npm run build 
-  cd electron
-  npm i --save sqlite3
-  npm i --save @types:sqlite3
-  npm run rebuild
-  cd ..
-  npx cap sync @capacitor-community/electron
-  npm run build
-  npx cap copy @capacitor-community/electron
-  npx cap open @capacitor-community/electron
-  ``` 
+  You MUST remove the Electron folder and add it again. 
 
 ### Web
 
@@ -94,6 +92,66 @@ The plugin add a suffix "SQLite" and an extension ".db" to the database name giv
 ## Comments within SQL statements
 
  - see [Comments within SQL](https://www.techonthenet.com/sqlite/comments.php)
+
+ - Some examples 
+
+ ```ts
+  const setContacts: Array<capSQLiteSet>  = [
+    { statement:"INSERT INTO contacts /* Contact Simpson */ (name,FirstName,email,company,age,MobileNumber) VALUES (?,?,?,?,?,?);",
+      values:["Simpson","Tom","Simpson@example.com",,69,"4405060708"]
+    },
+    { statement:"INSERT INTO contacts /* three more contacts */ (name,FirstName,email,company,age,MobileNumber) VALUES (?,?,?,?,?,?) -- Add Jones, Whiteley and Brown;",
+      values:[
+        ["Jones","David","Jones@example.com",,42.1,"4404030201"],
+        ["Whiteley","Dave","Whiteley@example.com",,45.3,"4405162732"],
+        ["Brown","John","Brown@example.com",,35,"4405243853"]
+      ]
+    },
+    { statement:"UPDATE contacts SET age = ? , MobileNumber = ? WHERE id = ? -- Update Jones Contact;",
+      values:[51.4,"4404030202",6]
+    }
+  ];
+  const setMessages: Array<capSQLiteSet>  = [
+    { statement:`
+    /* Define the messages table */
+    CREATE TABLE IF NOT EXISTS messages (
+      id INTEGER PRIMARY KEY NOT NULL,
+      contactid INTEGER, -- key to contacts(id)
+      title TEXT NOT NULL,
+      body TEXT NOT NULL,
+      last_modified INTEGER DEFAULT (strftime('%s', 'now')),
+      FOREIGN KEY (contactid) REFERENCES contacts(id) ON DELETE SET DEFAULT
+    );`,
+      values:[]
+    },
+  ];
+
+  let insertQuery = 'INSERT INTO contacts (name,FirstName,email,company,age,MobileNumber) VALUES (?, ?, ?, ?, ?, ?) -- Add Sue Hellen;';
+  let bindValues = ["Hellen","Sue","sue.hellen@example.com",,42,"4406050807"];
+  let ret = await db.run(insertQuery, bindValues);
+  console.log(`>>> run ret 1: ${JSON.stringify(ret)}`)
+  insertQuery = `INSERT INTO contacts /* some contacts */ (name,FirstName,email,company,age,MobileNumber) VALUES 
+      ('Doe','John','john.doe@example.com', 'IBM', 30, '4403050926'), -- add Doe
+      ('Watson','Dave','dave.watson@example.com','Apple', 30, '4407050932') /* add Watson */,
+      ('Smith', 'Jane', 'jane.smith@example.com', 'IBM', 27, '33607556142') /* Add Smith */-- End of add contact;`;
+  bindValues = [];
+  ret = await db.run(insertQuery, bindValues);
+  console.log(`>>> run ret 2: ${JSON.stringify(ret)}`)
+
+  let selectQuery = "SELECT * /* all columns */ FROM contacts WHERE company = 'IBM' -- for company IBM;";
+
+  ret = await db.query(selectQuery);
+  console.log(`>>> query "IBM" ret: ${JSON.stringify(ret)}`)
+
+  ret = await db.executeSet(setContacts);
+  console.log(`>>> executeSet 1 ret: ${JSON.stringify(ret)}`)
+
+  selectQuery = "SELECT email /* only email */ FROM contacts WHERE company ISNULL -- for company not given;";
+
+
+  ret = await db.executeSet(setMessages);
+  console.log(`>>> executeSet 2 ret: ${JSON.stringify(ret)}`)
+```
 
 ## Unexpected behaviours
 
